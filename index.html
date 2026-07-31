@@ -48,7 +48,7 @@
         }
 
         .logo-container img {
-            height: 45px; /* Altura da logo */
+            height: 45px; /* Altura da logo ajustada para o cabeçalho */
             object-fit: contain;
         }
 
@@ -70,7 +70,7 @@
             text-align: center;
         }
 
-        /* MUDANÇA 1: Título do Restaurante na cor Verde UFABC */
+        /* Título do Restaurante na cor Verde UFABC */
         .ru-title {
             font-size: 1.4rem;
             color: #005137; /* Verde UFABC */
@@ -102,7 +102,7 @@
             margin-top: 5px;
         }
 
-        /* MUDANÇA 2: Fundo Verde, Escrita Branca e Negrito */
+        /* Fundo Verde, Escrita Branca e Negrito */
         .status-badge {
             display: inline-block;
             padding: 8px 20px;
@@ -176,7 +176,8 @@
             <p>Universidade Federal do ABC</p>
         </div>
         <div class="logo-container">
-            <img src="logo-ufabc.png" alt="Logo UFABC" onerror="this.style.display='none'">
+            <!-- Nome correto do arquivo de imagem com extensão dupla conforme solicitado -->
+            <img src="logo-ufabc.png.png" alt="Logo UFABC" onerror="this.style.display='none'">
         </div>
     </header>
 
@@ -185,7 +186,6 @@
 
         <!-- Card de Lotação Atual -->
         <div class="card">
-            <!-- MUDANÇA 1 APLICADA AQUI -->
             <h1 class="ru-title">Restaurante Universitário</h1>
             <p class="subtitle">Monitoramento em Tempo Real</p>
 
@@ -194,7 +194,6 @@
                 <div class="label-pessoas">pessoas no momento</div>
             </div>
 
-            <!-- MUDANÇA 2 APLICADA AQUI -->
             <div id="statusBadge" class="status-badge">Conectando ao sistema...</div>
 
             <div class="info-grid">
@@ -254,23 +253,19 @@
 
                 // Lógica de cores baseada na lotação
                 if (valorAtual < 20) {
-                    // Verde UFABC + Texto Branco Negrito
                     badge.innerText = "Tranquilo"; 
                     badge.style.backgroundColor = "#005137";
                     badge.style.color = "#ffffff";
                 } else if (valorAtual >= 20 && valorAtual < 50) {
-                    // Amarelo mais escuro (para contraste) + Texto Branco Negrito
                     badge.innerText = "Moderado";
                     badge.style.backgroundColor = "#f39c12";
                     badge.style.color = "#ffffff";
                 } else {
-                    // Vermelho + Texto Branco Negrito
                     badge.innerText = "Lotado";
                     badge.style.backgroundColor = "#c0392b";
                     badge.style.color = "#ffffff";
                 }
             } else {
-                // Caso não haja dados, volta para o estilo original de conexão
                 display.innerText = "0";
                 badge.innerText = "Aguardando dados...";
                 badge.style.backgroundColor = "#005137";
