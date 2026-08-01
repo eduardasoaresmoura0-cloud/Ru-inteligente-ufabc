@@ -1,283 +1,501 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Lotação - RU UFABC</title>
-    <!-- Importando a fonte Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RU Inteligente — UFABC</title>
 
-        body {
-            background-color: #f4f7f6;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 
-        /* Cabeçalho */
-        .header {
-            width: 100%;
-            background-color: #ffffff;
-            border-bottom: 4px solid #005137; /* Faixa verde UFABC */
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+<style>
+  :root {
+    --verde: #005137;
+    --verde-claro: #0b8457;
+    --ambar: #e8930c;
+    --vermelho: #c0392b;
+    --bg: #f5f7f5;
+    --card: #ffffff;
+    --ink: #17251f;
+    --ink-soft: #5b6b63;
+    --border: #e4e9e6;
+    --shadow: 0 10px 30px rgba(0, 40, 25, 0.07);
+    --radius: 18px;
+    --status-color: var(--verde);
+    --transition: 0.5s cubic-bezier(.4,0,.2,1);
+  }
 
-        .header-title h2 {
-            font-size: 1.2rem;
-            color: #005137;
-            font-weight: 600;
-        }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .header-title p {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 15% 0%, rgba(0,81,55,0.05), transparent 45%);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-        .logo-container img {
-            height: 45px; /* Altura da logo ajustada para o cabeçalho */
-            object-fit: contain;
-        }
+  /* Header */
+  .header {
+    width: 100%;
+    background: var(--card);
+    border-bottom: 4px solid var(--verde);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
 
-        /* Container Principal */
-        .main-container {
-            max-width: 550px;
-            width: 100%;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+  .header-title h2 {
+    font-size: 1.15rem;
+    color: var(--verde);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
 
-        .card {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
+  .header-title p {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
 
-        /* Título do Restaurante na cor Verde UFABC */
-        .ru-title {
-            font-size: 1.4rem;
-            color: #005137; /* Verde UFABC */
-            margin-bottom: 5px;
-        }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
 
-        .subtitle {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-bottom: 25px;
-        }
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
 
-        .counter-box {
-            background: #eef2f3;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #9ca8a2;
+  }
 
-        .number {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-        }
+  .live-indicator.online .live-dot {
+    background: var(--verde-claro);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .live-indicator.online { color: var(--verde-claro); }
 
-        .label-pessoas {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(11,132,87,0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(11,132,87,0); }
+  }
 
-        /* Fundo Verde, Escrita Branca e Negrito */
-        .status-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 700; /* Negrito */
-            font-size: 0.9rem;
-            color: #ffffff; /* Branco */
-            background-color: #005137; /* Verde UFABC */
-            margin-bottom: 20px;
-        }
+  .logo-container img { height: 40px; object-fit: contain; }
+  .logo-fallback {
+    display: none;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--verde);
+    letter-spacing: 0.03em;
+  }
 
-        /* Detalhes extras (Entradas e Pico) */
-        .info-grid {
-            display: flex;
-            gap: 15px;
-        }
+  /* Main */
+  .main-container {
+    max-width: 480px;
+    width: 100%;
+    padding: 24px 18px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
 
-        .info-card {
-            flex: 1;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #e9ecef;
-            text-align: center;
-        }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: rise 0.6s ease forwards;
+  }
+  .card:nth-child(2) { animation-delay: 0.08s; }
+  .card:nth-child(3) { animation-delay: 0.16s; }
 
-        .info-card span {
-            display: block;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 
-        .info-card p {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            margin-top: 3px;
-        }
+  .ru-title { font-size: 1.3rem; color: var(--verde); font-weight: 700; }
+  .subtitle { font-size: 0.85rem; color: var(--ink-soft); margin-top: 2px; margin-bottom: 22px; }
 
-        /* Seção do Gráfico de Picos */
-        .peak-section h3 {
-            font-size: 1.1rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
+  /* Gauge */
+  .gauge-wrap {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 14px;
+  }
 
-        .peak-placeholder {
-            background: #f8f9fa;
-            border: 2px dashed #cbd5e1;
-            border-radius: 10px;
-            padding: 25px;
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
+  .gauge-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 
-        .footer {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #bdc3c7;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-    </style>
+  .gauge-track { fill: none; stroke: var(--border); stroke-width: 14; }
+  .gauge-fill {
+    fill: none;
+    stroke: var(--status-color);
+    stroke-width: 14;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.7s cubic-bezier(.4,0,.2,1), stroke var(--transition);
+  }
+
+  .gauge-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  .number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  .label-pessoas { font-size: 0.78rem; color: var(--ink-soft); }
+  .pct-label { font-size: 0.72rem; color: var(--status-color); font-weight: 600; margin-top: 2px; }
+
+  .status-badge {
+    display: inline-block;
+    padding: 8px 22px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #ffffff;
+    background: var(--status-color);
+    transition: background var(--transition);
+    margin-bottom: 6px;
+  }
+
+  .updated-at { font-size: 0.72rem; color: var(--ink-soft); margin-top: 10px; }
+
+  /* Info grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .info-card {
+    background: var(--bg);
+    padding: 14px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .info-card span {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .info-card p { font-size: 0.7rem; color: var(--ink-soft); margin-top: 4px; }
+
+  /* Peak section */
+  .peak-section { text-align: left; }
+  .peak-section h3 { font-size: 1.02rem; color: var(--ink); margin-bottom: 4px; }
+  .peak-section .peak-sub { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 18px; }
+
+  .chart-box { position: relative; height: 200px; }
+
+  .empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 20px 10px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+  .empty-state svg { opacity: 0.5; }
+
+  .footer {
+    font-size: 0.75rem;
+    color: #a8b3ae;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; opacity: 1; transform: none; }
+    .live-indicator.online .live-dot { animation: none; }
+    .gauge-fill { transition: none; }
+  }
+
+  @media (max-width: 360px) {
+    .number { font-size: 2.5rem; }
+    .gauge-wrap { width: 190px; height: 190px; }
+  }
+</style>
 </head>
 <body>
 
-    <!-- CABEÇALHO -->
-    <header class="header">
-        <div class="header-title">
-            <h2>RU Inteligente</h2>
-            <p>Universidade Federal do ABC</p>
-        </div>
-        <div class="logo-container">
-            <!-- Nome correto do arquivo de imagem com extensão dupla conforme solicitado -->
-            <img src="logo-ufabc.png.png" alt="Logo UFABC" onerror="this.style.display='none'">
-        </div>
-    </header>
+<header class="header">
+  <div class="header-title">
+    <h2>RU Inteligente</h2>
+    <p>Universidade Federal do ABC</p>
+  </div>
+  <div class="header-right">
+    <div class="live-indicator" id="liveIndicator">
+      <span class="live-dot"></span>
+      <span id="liveText">Conectando…</span>
+    </div>
+    <div class="logo-container">
+      <img src="logo-ufabc.png" alt="Logo UFABC"
+           onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+      <div class="logo-fallback" id="logoFallback">UFABC</div>
+    </div>
+  </div>
+</header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <div class="main-container">
+<div class="main-container">
 
-        <!-- Card de Lotação Atual -->
-        <div class="card">
-            <h1 class="ru-title">Restaurante Universitário</h1>
-            <p class="subtitle">Monitoramento em Tempo Real</p>
+  <div class="card">
+    <h1 class="ru-title">Restaurante Universitário</h1>
+    <p class="subtitle">Monitoramento em tempo real</p>
 
-            <div class="counter-box">
-                <span class="number" id="lotacaoDisplay">--</span>
-                <div class="label-pessoas">pessoas no momento</div>
-            </div>
-
-            <div id="statusBadge" class="status-badge">Conectando ao sistema...</div>
-
-            <div class="info-grid">
-                <div class="info-card">
-                    <span id="totalEntradaDisplay">--</span>
-                    <p>Total que Entrou</p>
-                </div>
-                <div class="info-card">
-                    <span id="picoDiaDisplay">--</span>
-                    <p>Pico Registrado</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Seção de Gráficos de Pico -->
-        <div class="card peak-section">
-            <h3>Horários de Maior Movimento</h3>
-            <div class="peak-placeholder">
-                [ Espaço reservado para o gráfico de picos de lotação ]
-            </div>
-        </div>
-
-        <div class="footer">
-            Projeto IoT - UFABC • 2026
-        </div>
+    <div class="gauge-wrap">
+      <svg viewBox="0 0 200 200">
+        <circle class="gauge-track" cx="100" cy="100" r="85"></circle>
+        <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="85"
+                stroke-dasharray="534.07" stroke-dashoffset="534.07"></circle>
+      </svg>
+      <div class="gauge-center">
+        <span class="eyebrow">Agora</span>
+        <span class="number" id="lotacaoDisplay" aria-live="polite">--</span>
+        <span class="label-pessoas">pessoas</span>
+        <span class="pct-label" id="pctDisplay"></span>
+      </div>
     </div>
 
-    <!-- SCRIPT DE CONEXÃO COM FIREBASE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    <div id="statusBadge" class="status-badge">Conectando ao sistema…</div>
+    <div class="updated-at" id="updatedAt"></div>
 
-        // CREDENCIAIS ATUALIZADAS DO FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyBX9h4BWdp0CeXDCBp9cHIMnTh7kJ3u5A",
-            authDomain: "smart-ru-4dbc4.firebaseapp.com",
-            databaseURL: "https://smart-ru-4dbc4-default-rtdb.firebaseio.com",
-            projectId: "smart-ru-4dbc4",
-            storageBucket: "smart-ru-4dbc4.appspot.com",
-            messagingSenderId: "584883088388",
-            appId: "1:584883088388:web:9d15f74b7cf41530011951"
-        };
+    <div class="info-grid">
+      <div class="info-card">
+        <span id="totalEntradaDisplay">--</span>
+        <p>Entraram hoje</p>
+      </div>
+      <div class="info-card">
+        <span id="picoDiaDisplay">--</span>
+        <p>Pico do dia</p>
+      </div>
+      <div class="info-card">
+        <span id="ocupacaoDisplay">--</span>
+        <p>Da capacidade</p>
+      </div>
+    </div>
+  </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+  <div class="card peak-section">
+    <h3>Horários de maior movimento</h3>
+    <p class="peak-sub">Média de pessoas por horário registrada pelo sistema</p>
+    <div class="chart-box">
+      <canvas id="peakChart"></canvas>
+      <div class="empty-state" id="emptyState">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#5b6b63" stroke-width="1.6">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 7v5l3 3"></path>
+        </svg>
+        <span>Ainda não há dados suficientes. Assim que o sistema acumular histórico de mais de um dia, os horários de pico aparecem aqui automaticamente.</span>
+      </div>
+    </div>
+  </div>
 
-        const lotacaoRef = ref(db, 'RU/lotacao');
-        const totalEntradaRef = ref(db, 'RU/totalEntrada');
+  <div class="footer">Projeto IoT — UFABC • <span id="ano"></span></div>
+</div>
 
-        onValue(lotacaoRef, (snapshot) => {
-            const valorAtual = snapshot.val();
-            const display = document.getElementById('lotacaoDisplay');
-            const badge = document.getElementById('statusBadge');
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-            if (valorAtual !== null) {
-                display.innerText = valorAtual;
+  // Credenciais do Firebase — são chaves públicas de configuração do app,
+  // não são segredo; a proteção real fica nas Regras de Segurança do Realtime Database.
+  const firebaseConfig = {
+    apiKey: "AIzaSyBX9h4BWdp0CeXDCBp9cHIMnTh7kJ3u5A",
+    authDomain: "smart-ru-4dbc4.firebaseapp.com",
+    databaseURL: "https://smart-ru-4dbc4-default-rtdb.firebaseio.com",
+    projectId: "smart-ru-4dbc4",
+    storageBucket: "smart-ru-4dbc4.appspot.com",
+    messagingSenderId: "584883088388",
+    appId: "1:584883088388:web:9d15f74b7cf41530011951"
+  };
 
-                // Lógica de cores baseada na lotação
-                if (valorAtual < 20) {
-                    badge.innerText = "Tranquilo"; 
-                    badge.style.backgroundColor = "#005137";
-                    badge.style.color = "#ffffff";
-                } else if (valorAtual >= 20 && valorAtual < 50) {
-                    badge.innerText = "Moderado";
-                    badge.style.backgroundColor = "#f39c12";
-                    badge.style.color = "#ffffff";
-                } else {
-                    badge.innerText = "Lotado";
-                    badge.style.backgroundColor = "#c0392b";
-                    badge.style.color = "#ffffff";
-                }
-            } else {
-                display.innerText = "0";
-                badge.innerText = "Aguardando dados...";
-                badge.style.backgroundColor = "#005137";
-                badge.style.color = "#ffffff";
-            }
-        });
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-        onValue(totalEntradaRef, (snapshot) => {
-            const total = snapshot.val();
-            document.getElementById('totalEntradaDisplay').innerText = total !== null ? total : "--";
-        });
-    </script>
+  // ---- Configuráveis: ajuste para os números reais do seu RU ----
+  const LIMITE_MODERADO = 20;
+  const LIMITE_LOTADO = 50; // também usado como "100% do anel" — troque se seu limite real for outro
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const CIRCUNFERENCIA = 534.07;
+  let valorAtualExibido = 0;
+
+  function animarNumero(el, de, para, duracao = 500) {
+    if (reduceMotion || de === para) { el.textContent = para; return; }
+    const inicio = performance.now();
+    function passo(agora) {
+      const progresso = Math.min((agora - inicio) / duracao, 1);
+      const valor = Math.round(de + (para - de) * progresso);
+      el.textContent = valor;
+      if (progresso < 1) requestAnimationFrame(passo);
+    }
+    requestAnimationFrame(passo);
+  }
+
+  function tempoRelativo(timestamp) {
+    const segundos = Math.floor((Date.now() - timestamp) / 1000);
+    if (segundos < 5) return "agora mesmo";
+    if (segundos < 60) return `há ${segundos}s`;
+    const minutos = Math.floor(segundos / 60);
+    if (minutos < 60) return `há ${minutos} min`;
+    return `há ${Math.floor(minutos / 60)}h`;
+  }
+
+  let ultimaAtualizacao = null;
+  setInterval(() => {
+    if (ultimaAtualizacao) {
+      document.getElementById('updatedAt').textContent = `Atualizado ${tempoRelativo(ultimaAtualizacao)}`;
+    }
+  }, 1000);
+
+  // Indicador de conexão real com o Firebase
+  onValue(ref(db, '.info/connected'), (snap) => {
+    const indicator = document.getElementById('liveIndicator');
+    const text = document.getElementById('liveText');
+    if (snap.val() === true) {
+      indicator.classList.add('online');
+      text.textContent = 'Ao vivo';
+    } else {
+      indicator.classList.remove('online');
+      text.textContent = 'Offline';
+    }
+  });
+
+  onValue(ref(db, 'RU/lotacao'), (snapshot) => {
+    const valorAtual = snapshot.val();
+    const display = document.getElementById('lotacaoDisplay');
+    const badge = document.getElementById('statusBadge');
+    const root = document.documentElement;
+    const valor = valorAtual !== null ? valorAtual : 0;
+
+    animarNumero(display, valorAtualExibido, valor);
+    valorAtualExibido = valor;
+    ultimaAtualizacao = Date.now();
+    document.getElementById('updatedAt').textContent = `Atualizado ${tempoRelativo(ultimaAtualizacao)}`;
+
+    // Anel de capacidade (usa LIMITE_LOTADO como referência de "cheio")
+    const pct = Math.min(valor / LIMITE_LOTADO, 1);
+    document.getElementById('gaugeFill').setAttribute(
+      'stroke-dashoffset', CIRCUNFERENCIA * (1 - pct)
+    );
+    document.getElementById('pctDisplay').textContent = `${Math.round(pct * 100)}% da capacidade`;
+    document.getElementById('ocupacaoDisplay').textContent = `${Math.round(pct * 100)}%`;
+
+    if (valorAtual === null) {
+      badge.textContent = "Aguardando dados…";
+      root.style.setProperty('--status-color', 'var(--verde)');
+      return;
+    }
+
+    if (valor < LIMITE_MODERADO) {
+      badge.textContent = "Tranquilo";
+      root.style.setProperty('--status-color', '#0b8457');
+    } else if (valor < LIMITE_LOTADO) {
+      badge.textContent = "Moderado";
+      root.style.setProperty('--status-color', '#e8930c');
+    } else {
+      badge.textContent = "Lotado";
+      root.style.setProperty('--status-color', '#c0392b');
+    }
+  });
+
+  onValue(ref(db, 'RU/totalEntrada'), (snapshot) => {
+    const total = snapshot.val();
+    document.getElementById('totalEntradaDisplay').textContent = total !== null ? total : "--";
+  });
+
+  // Pico do dia — antes não estava conectado a nada
+  onValue(ref(db, 'RU/picoDia'), (snapshot) => {
+    const pico = snapshot.val();
+    document.getElementById('picoDiaDisplay').textContent = pico !== null ? pico : "--";
+  });
+
+  // Histórico por horário, esperado no formato { "07": 5, "08": 22, ... "20": 10 }
+  onValue(ref(db, 'RU/historicoPorHora'), (snapshot) => {
+    const dados = snapshot.val();
+    const canvas = document.getElementById('peakChart');
+    const vazio = document.getElementById('emptyState');
+
+    if (!dados || Object.keys(dados).length === 0) {
+      canvas.style.display = 'none';
+      vazio.style.display = 'flex';
+      return;
+    }
+    canvas.style.display = 'block';
+    vazio.style.display = 'none';
+
+    const horas = Object.keys(dados).sort();
+    const valores = horas.map(h => dados[h]);
+    const maxValor = Math.max(...valores);
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: horas.map(h => `${h}h`),
+        datasets: [{
+          data: valores,
+          backgroundColor: valores.map(v => v === maxValor ? '#c0392b' : '#005137'),
+          borderRadius: 6,
+          maxBarThickness: 26
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#eef1ef' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }, { onlyOnce: true });
+
+  document.getElementById('ano').textContent = new Date().getFullYear();
+</script>
 
 </body>
 </html>
