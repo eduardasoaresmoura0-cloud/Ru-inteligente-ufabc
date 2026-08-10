@@ -23,6 +23,7 @@
     --borda: #e4e9e6;
     --sombra: 0 10px 30px rgba(0, 40, 25, 0.05);
     --raio: 16px;
+    --status-color: var(--ambar);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -88,14 +89,22 @@
     gap: 6px;
     font-size: 0.75rem;
     font-weight: 600;
+    color: #aab4af;
+  }
+
+  .live-badge.online {
     color: var(--verde-claro);
   }
 
   .live-dot {
     width: 8px;
     height: 8px;
-    background: var(--verde-claro);
+    background: #aab4af;
     border-radius: 50%;
+  }
+
+  .live-badge.online .live-dot {
+    background: var(--verde-claro);
   }
 
   .ufabc-tag {
@@ -182,6 +191,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: none;
+  }
+
+  .carousel-img.active {
+    display: block;
   }
 
   .carousel-btn {
@@ -217,6 +231,7 @@
     height: 6px;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 50%;
+    cursor: pointer;
   }
   .dot.active { background: #ffffff; width: 14px; border-radius: 3px; }
 
@@ -267,17 +282,6 @@
     justify-content: center;
   }
 
-  .gauge-circle {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 12px solid var(--borda);
-    border-top-color: var(--ambar);
-    border-right-color: var(--ambar);
-    transform: rotate(-45deg);
-  }
-
   .gauge-number {
     font-family: 'JetBrains Mono', monospace;
     font-size: 2.5rem;
@@ -296,12 +300,12 @@
   .gauge-pct {
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--ambar);
+    color: var(--status-color);
     margin-top: 2px;
   }
 
   .status-pill {
-    background: var(--ambar);
+    background: var(--status-color);
     color: #ffffff;
     padding: 5px 16px;
     border-radius: 20px;
@@ -311,6 +315,7 @@
     align-items: center;
     gap: 6px;
     margin: 8px 0 5px;
+    transition: background 0.3s;
   }
 
   .status-desc {
@@ -345,10 +350,11 @@
   }
 
   .progress-fill {
-    width: 94%;
+    width: 0%;
     height: 100%;
-    background: var(--ambar);
+    background: var(--status-color);
     border-radius: 4px;
+    transition: width 0.5s ease, background 0.3s;
   }
 
   .update-footer {
@@ -578,14 +584,14 @@
       </div>
     </div>
     <div class="header-right">
-      <div class="live-badge">
-        <span class="live-dot"></span> Ao vivo
+      <div class="live-badge" id="liveBadge">
+        <span class="live-dot"></span> <span id="liveText">Conectando...</span>
       </div>
       <div class="ufabc-tag">UFABC</div>
       <div class="clock-box">
         <div>
-          <div class="clock-time">15:42:36</div>
-          <div class="clock-date">Sábado, 09 de agosto de 2026</div>
+          <div class="clock-time" id="clockTime">--:--:--</div>
+          <div class="clock-date" id="clockDate">--</div>
         </div>
       </div>
     </div>
@@ -602,15 +608,20 @@
         <div class="card-title">📷 Conheça o RU</div>
         <div class="card-subtitle">Espaços do Restaurante Universitário</div>
         
-        <div class="carousel-container">
-          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80" alt="Ambiente do RU" class="carousel-img" id="activeImage">
-          <button class="carousel-btn prev">&#10094;</button>
-          <button class="carousel-btn next">&#10095;</button>
-          <div class="carousel-dots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+        <div class="carousel-container" id="carouselContainer">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80" alt="Ambiente do RU 1" class="carousel-img active">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80" alt="Ambiente do RU 2" class="carousel-img">
+          <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=600&q=80" alt="Ambiente do RU 3" class="carousel-img">
+          <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=600&q=80" alt="Ambiente do RU 4" class="carousel-img">
+          
+          <button class="carousel-btn prev" id="prevBtn">&#10094;</button>
+          <button class="carousel-btn next" id="nextBtn">&#10095;</button>
+          
+          <div class="carousel-dots" id="carouselDots">
+            <span class="dot active" data-index="0"></span>
+            <span class="dot" data-index="1"></span>
+            <span class="dot" data-index="2"></span>
+            <span class="dot" data-index="3"></span>
           </div>
         </div>
 
@@ -618,11 +629,11 @@
           📍 Restaurante Universitário &bull; Campus Santo André – UFABC
         </div>
 
-        <div class="thumbnails">
-          <div class="thumb active"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=150&q=80" alt="Thumb 1"></div>
-          <div class="thumb"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=150&q=80" alt="Thumb 2"></div>
-          <div class="thumb"><img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=150&q=80" alt="Thumb 3"></div>
-          <div class="thumb"><img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=150&q=80" alt="Thumb 4"></div>
+        <div class="thumbnails" id="thumbnailList">
+          <div class="thumb active" data-index="0"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=150&q=80" alt="Thumb 1"></div>
+          <div class="thumb" data-index="1"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=150&q=80" alt="Thumb 2"></div>
+          <div class="thumb" data-index="2"><img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=150&q=80" alt="Thumb 3"></div>
+          <div class="thumb" data-index="3"><img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=150&q=80" alt="Thumb 4"></div>
         </div>
       </div>
 
@@ -633,28 +644,27 @@
 
         <div class="monitor-content">
           <div class="gauge-wrapper">
-            <div class="gauge-circle"></div>
-            <div class="gauge-number">47</div>
+            <div class="gauge-number" id="lotacaoDisplay">--</div>
             <div class="gauge-label">pessoas</div>
           </div>
-          <div class="gauge-pct">94% da capacidade</div>
+          <div class="gauge-pct" id="gaugePctDisplay">--% da capacidade</div>
 
-          <div class="status-pill">
-            <span>👤 Moderado</span>
+          <div class="status-pill" id="statusPill">
+            <span id="statusText">Aguardando...</span>
           </div>
-          <p class="status-desc">Movimento normal no RU. Estamos próximos da capacidade máxima.</p>
+          <p class="status-desc" id="statusDesc">Conectando ao sistema...</p>
 
           <div class="capacity-bar-area">
             <div class="capacity-header">
               <span>OCUPAÇÃO</span>
-              <span>94%</span>
+              <span id="capacityPctText">--%</span>
             </div>
             <div class="progress-track">
-              <div class="progress-fill"></div>
+              <div class="progress-fill" id="progressFill"></div>
             </div>
             <div class="update-footer">
-              <span>47 de 50 pessoas</span>
-              <span>&bull; Última atualização: há 3 segundos</span>
+              <span id="capacityCountText">0 de 50 pessoas</span>
+              <span id="updatedAtText">&bull; Última atualização: --</span>
             </div>
           </div>
         </div>
@@ -671,7 +681,7 @@
 
         <div class="peak-highlight-box">
           <span>ℹ️</span>
-          <div>Horário de maior movimento: <strong>12h</strong><br><span style="color: var(--texto-suave);">Média de 57 pessoas</span></div>
+          <div>Horário de maior movimento: <strong id="boxHorarioPico">--</strong><br><span style="color: var(--texto-suave);" id="boxMediaPico">Aguardando dados...</span></div>
         </div>
       </div>
 
@@ -682,7 +692,7 @@
       <div class="indicator-card">
         <div class="indicator-icon">👥</div>
         <div class="indicator-data">
-          <div class="val">60</div>
+          <div class="val" id="totalEntradasVal">--</div>
           <div class="lbl">Entraram hoje<br><span style="font-size: 0.62rem; color: #88948f;">Total de entradas registradas</span></div>
         </div>
       </div>
@@ -690,7 +700,7 @@
       <div class="indicator-card">
         <div class="indicator-icon">📈</div>
         <div class="indicator-data">
-          <div class="val">57</div>
+          <div class="val" id="picoDiaVal">--</div>
           <div class="lbl">Pico do dia<br><span style="font-size: 0.62rem; color: #88948f;">Maior lotação registrada</span></div>
         </div>
       </div>
@@ -698,7 +708,7 @@
       <div class="indicator-card">
         <div class="indicator-icon">🟡</div>
         <div class="indicator-data">
-          <div class="val">94%</div>
+          <div class="val" id="capacidadePctVal">--%</div>
           <div class="lbl">Da capacidade<br><span style="font-size: 0.62rem; color: #88948f;">Ocupação atual do RU</span></div>
         </div>
       </div>
@@ -706,7 +716,7 @@
       <div class="indicator-card">
         <div class="indicator-icon">🕒</div>
         <div class="indicator-data">
-          <div class="val">12h</div>
+          <div class="val" id="horarioPicoVal">--</div>
           <div class="lbl">Horário de pico<br><span style="font-size: 0.62rem; color: #88948f;">Maior movimento do dia</span></div>
         </div>
       </div>
@@ -722,25 +732,25 @@
         <div class="summary-list">
           <div class="summary-row">
             <span>🚪 Primeira entrada</span>
-            <span>11:02</span>
+            <span id="primeiraEntradaVal">--</span>
           </div>
           <div class="summary-row">
             <span>📈 Maior movimento</span>
-            <span>12:35</span>
+            <span id="maiorMovimentoVal">--</span>
           </div>
           <div class="summary-row">
             <span>👥 Pico de lotação</span>
-            <span>57 pessoas</span>
+            <span id="picoLotacaoVal">--</span>
           </div>
           <div class="summary-row">
             <span>📥 Entradas registradas</span>
-            <span>60</span>
+            <span id="entradasRegistradasVal">--</span>
           </div>
         </div>
 
         <div class="status-card-inner">
-          <h4>😊 Como está o RU agora?</h4>
-          <p>O RU está com movimento <strong>moderado</strong> no momento.<br>Aguarde alguns minutos ou venha tranquilo!</p>
+          <h4 id="cardStatusTitle">😊 Como está o RU agora?</h4>
+          <p id="cardStatusDesc">Aguardando dados em tempo real do sistema...</p>
         </div>
       </div>
 
@@ -752,7 +762,7 @@
           <div class="map-text">
             <h3>Restaurante Universitário</h3>
             <p>UFABC – Campus Santo André<br>Alameda da Universidade, s/n<br>Bairro Anchieta – Santo André/SP</p>
-            <button class="map-btn">📍 Ver no mapa</button>
+            <button class="map-btn" onclick="window.open('https://maps.google.com/?q=UFABC+Campus+Santo+Andre', '_blank')">📍 Ver no mapa</button>
           </div>
           <div class="map-illustration">
             <div class="map-pin">🍽️ RU</div>
@@ -770,47 +780,209 @@
     <span>Dados em tempo real via Firebase e ESP32 🖧</span>
   </footer>
 
-  <!-- SCRIPT PARA RENDERIZAR O GRÁFICO IDÊNTICO -->
-  <script>
-    const ctx = document.getElementById('movementChart').getContext('2d');
-    
-    // Dados exatos extraídos da imagem do gráfico de barras por hora
-    const horas = ['07h', '08h', '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h'];
-    const valores = [10, 28, 35, 44, 57, 41, 41, 32, 26, 18, 11, 6, 4, 0];
-    const cores = valores.map(v => v === 57 ? '#c0392b' : '#005137'); // Destaca o pico de 12h em vermelho
+  <!-- SCRIPT DE INTEGRAÇÃO COM FIREBASE E INTERATIVIDADE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: horas,
-        datasets: [{
-          data: valores,
-          backgroundColor: cores,
-          borderRadius: 4,
-          maxBarThickness: 22
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: true }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 60,
-            ticks: { stepSize: 15, font: { size: 10 } },
-            grid: { color: '#edf2ef' }
-          },
-          x: {
-            grid: { display: false },
-            ticks: { font: { size: 10 } }
-          }
-        }
+    // Configuração oficial do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBX9h4BWdp0CeXDCBp9cHIMnTh7kJ3u5A",
+      authDomain: "smart-ru-4dbc4.firebaseapp.com",
+      databaseURL: "https://smart-ru-4dbc4-default-rtdb.firebaseio.com",
+      projectId: "smart-ru-4dbc4",
+      storageBucket: "smart-ru-4dbc4.appspot.com",
+      messagingSenderId: "584883088388",
+      appId: "1:584883088388:web:9d15f74b7cf41530011951"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const CAPACIDADE = 50;
+    let movementChart = null;
+
+    // --- RELÓGIO DO HEADER ---
+    function atualizarRelogio() {
+      const agora = new Date();
+      document.getElementById("clockTime").textContent = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      document.getElementById("clockDate").textContent = agora.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+    }
+    setInterval(atualizarRelogio, 1000);
+    atualizarRelogio();
+
+    // --- STATUS DE CONEXÃO FIREBASE ---
+    onValue(ref(db, '.info/connected'), (snap) => {
+      const badge = document.getElementById('liveBadge');
+      const text = document.getElementById('liveText');
+      if (snap.val() === true) {
+        badge.classList.add('online');
+        text.textContent = 'Ao vivo';
+      } else {
+        badge.classList.remove('online');
+        text.textContent = 'Offline';
       }
     });
+
+    // --- MONITORAMENTO EM TEMPO REAL (LOTAÇÃO) ---
+    onValue(ref(db, "RU/lotacao"), (snapshot) => {
+      const val = snapshot.val();
+      const lotacao = val !== null ? Number(val) : 0;
+      
+      document.getElementById("lotacaoDisplay").textContent = lotacao;
+      
+      const pct = Math.min(Math.round((lotacao / CAPACIDADE) * 100), 100);
+      document.getElementById("gaugePctDisplay").textContent = `${pct}% da capacidade`;
+      document.getElementById("capacityPctText").textContent = `${pct}%`;
+      document.getElementById("capacidadePctVal").textContent = `${pct}%`;
+      document.getElementById("progressFill").style.width = `${pct}%`;
+      document.getElementById("capacityCountText").textContent = `${lotacao} de ${CAPACIDADE} pessoas`;
+      document.getElementById("picoLotacaoVal").textContent = `${lotacao} pessoas`;
+      document.getElementById("updatedAtText").textContent = `• Última atualização: agora mesmo`;
+
+      const root = document.documentElement;
+      const statusText = document.getElementById("statusText");
+      const statusDesc = document.getElementById("statusDesc");
+      const cardTitle = document.getElementById("cardStatusTitle");
+      const cardDesc = document.getElementById("cardStatusDesc");
+
+      if (lotacao < 20) {
+        root.style.setProperty("--status-color", "#0b8457");
+        statusText.textContent = "Tranquilo";
+        statusDesc.textContent = "Movimento baixo no RU. Ótimo momento para almoçar/jantar!";
+        cardTitle.textContent = "😊 Como está o RU agora?";
+        cardDesc.innerHTML = "O RU está com movimento <strong>tranquilo</strong> no momento.<br>Pode vir sem filas!";
+      } else if (lotacao < CAPACIDADE) {
+        root.style.setProperty("--status-color", "#e8930c");
+        statusText.textContent = "Moderado";
+        statusDesc.textContent = "Movimento normal no RU. Estamos próximos da capacidade máxima.";
+        cardTitle.textContent = "😊 Como está o RU agora?";
+        cardDesc.innerHTML = "O RU está com movimento <strong>moderado</strong> no momento.<br>Aguarde alguns minutos ou venha tranquilo!";
+      } else {
+        root.style.setProperty("--status-color", "#c0392b");
+        statusText.textContent = lotacao > CAPACIDADE ? `Capacidade atingida (+${lotacao - CAPACIDADE})` : "Lotado";
+        statusDesc.textContent = "O RU atingiu sua capacidade máxima no momento.";
+        cardTitle.textContent = "⚠️ Atenção!";
+        cardDesc.innerHTML = "O RU está <strong>lotado</strong> no momento.<br>Recomendamos aguardar um pouco.";
+      }
+    });
+
+    // --- OUTROS INDICADORES (ENTRADAS E PICO) ---
+    onValue(ref(db, "RU/totalEntrada"), (snapshot) => {
+      const val = snapshot.val();
+      const total = val !== null ? val : "--";
+      document.getElementById("totalEntradasVal").textContent = total;
+      document.getElementById("entradasRegistradasVal").textContent = total;
+    });
+
+    onValue(ref(db, "RU/picoDia"), (snapshot) => {
+      const val = snapshot.val();
+      document.getElementById("picoDiaVal").textContent = val !== null ? val : "--";
+    });
+
+    onValue(ref(db, "RU/horarioPico"), (snapshot) => {
+      const val = snapshot.val();
+      const horarioStr = val !== null ? `${val}h` : "--";
+      document.getElementById("horarioPicoVal").textContent = horarioStr;
+      document.getElementById("boxHorarioPico").textContent = horarioStr;
+    });
+
+    onValue(ref(db, "RU/primeiraEntrada"), (snapshot) => {
+      const val = snapshot.val();
+      document.getElementById("primeiraEntradaVal").textContent = val !== null ? val : "--";
+    });
+
+    onValue(ref(db, "RU/maiorMovimentoHora"), (snapshot) => {
+      const val = snapshot.val();
+      document.getElementById("maiorMovimentoVal").textContent = val !== null ? val : "--";
+    });
+
+    // --- GRÁFICO DINÂMICO ---
+    onValue(ref(db, "RU/historicoPorHora"), (snapshot) => {
+      const dados = snapshot.val();
+      const ctx = document.getElementById('movementChart').getContext('2d');
+
+      let horas = ['07h', '08h', '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h'];
+      let valores = [10, 28, 35, 44, 57, 41, 41, 32, 26, 18, 11, 6, 4, 0];
+
+      if (dados) {
+        horas = Object.keys(dados).sort();
+        valores = horas.map(h => Number(dados[h]));
+      }
+
+      const maxVal = Math.max(...valores);
+      const cores = valores.map(v => v === maxVal ? '#c0392b' : '#005137');
+      
+      document.getElementById("boxMediaPico").textContent = `Média de ${maxVal} pessoas`;
+
+      if (movementChart) movementChart.destroy();
+
+      movementChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: horas.map(h => h.toString().includes('h') ? h : `${h}h`),
+          datasets: [{
+            data: valores,
+            backgroundColor: cores,
+            borderRadius: 4,
+            maxBarThickness: 22
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 15, font: { size: 10 } },
+              grid: { color: '#edf2ef' }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 10 } }
+            }
+          }
+        }
+      });
+    });
+
+    // --- CARROSSEL DE FOTOS INTERATIVO ---
+    let currentIndex = 0;
+    const images = document.querySelectorAll('.carousel-img');
+    const dots = document.querySelectorAll('.carousel-dots .dot');
+    const thumbs = document.querySelectorAll('.thumbnails .thumb');
+
+    function showImage(index) {
+      images.forEach(img => img.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      thumbs.forEach(t => t.classList.remove('active'));
+
+      currentIndex = (index + images.length) % images.length;
+      
+      images[currentIndex].classList.add('active');
+      dots[currentIndex].classList.add('active');
+      thumbs[currentIndex].classList.add('active');
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', () => showImage(currentIndex + 1));
+    document.getElementById('prevBtn').addEventListener('click', () => showImage(currentIndex - 1));
+
+    dots.forEach((dot, idx) => {
+      dot.addEventListener('click', () => showImage(idx));
+    });
+
+    thumbs.forEach((thumb, idx) => {
+      thumb.addEventListener('click', () => showImage(idx));
+    });
+
+    // Rotação automática das fotos a cada 5 segundos
+    setInterval(() => {
+      showImage(currentIndex + 1);
+    }, 5000);
   </script>
 
 </body>
