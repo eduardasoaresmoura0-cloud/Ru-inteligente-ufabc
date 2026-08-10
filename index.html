@@ -18,12 +18,13 @@
     --vermelho: #c0392b;
     --bg: #f5f7f5;
     --card: #ffffff;
-    --texto: #17251f;
-    --texto-suave: #5b6b63;
-    --borda: #e4e9e6;
-    --sombra: 0 10px 30px rgba(0, 40, 25, 0.07);
-    --raio: 18px;
+    --ink: #17251f;
+    --ink-soft: #5b6b63;
+    --border: #e4e9e6;
+    --shadow: 0 10px 30px rgba(0, 40, 25, 0.07);
+    --radius: 18px;
     --status-color: var(--verde);
+    --transition: 0.5s cubic-bezier(.4,0,.2,1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,315 +32,316 @@
   body {
     font-family: 'Poppins', sans-serif;
     background: var(--bg);
-    color: var(--texto);
+    background-image: radial-gradient(circle at 15% 0%, rgba(0,81,55,0.05), transparent 45%);
+    color: var(--ink);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
+  /* Header */
   .header {
     width: 100%;
     background: var(--card);
     border-bottom: 4px solid var(--verde);
-    padding: 15px 4%;
+    padding: 16px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
   }
 
-  .header-title h1 {
+  .header-title h2 {
     font-size: 1.15rem;
     color: var(--verde);
     font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   .header-title p {
     font-size: 0.78rem;
-    color: var(--texto-suave);
+    color: var(--ink-soft);
   }
 
   .header-right {
     display: flex;
     align-items: center;
-    gap: 16px;
-  }
-
-  .clock {
-    text-align: right;
-  }
-
-  .clock-time {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--texto);
-  }
-
-  .clock-date {
-    font-size: 0.7rem;
-    color: var(--texto-suave);
+    gap: 14px;
   }
 
   .live-indicator {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--texto-suave);
+    color: var(--ink-soft);
   }
 
   .live-dot {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: #aab4af;
+    background: #9ca8a2;
   }
 
-  .live-indicator.online {
-    color: var(--verde-claro);
-  }
   .live-indicator.online .live-dot {
     background: var(--verde-claro);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .live-indicator.online { color: var(--verde-claro); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(11,132,87,0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(11,132,87,0); }
   }
 
+  .logo-container img { height: 40px; object-fit: contain; }
+  .logo-fallback {
+    display: none;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--verde);
+    letter-spacing: 0.03em;
+  }
+
+  /* Main */
   .main-container {
-    max-width: 900px;
-    width: 92%;
-    padding: 24px 0 40px;
+    max-width: 480px;
+    width: 100%;
+    padding: 24px 18px 40px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-  }
-
-  .top-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.35fr;
-    gap: 20px;
+    gap: 18px;
   }
 
   .card {
     background: var(--card);
-    border: 1px solid var(--borda);
-    border-radius: var(--raio);
-    box-shadow: var(--sombra);
-    padding: 25px;
-  }
-
-  .section-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--texto);
-    margin-bottom: 5px;
-  }
-
-  .section-subtitle {
-    font-size: 0.7rem;
-    color: var(--texto-suave);
-    margin-bottom: 20px;
-  }
-
-  .occupancy-card {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
     text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: rise 0.6s ease forwards;
+  }
+  .card:nth-child(2) { animation-delay: 0.08s; }
+  .card:nth-child(3) { animation-delay: 0.16s; }
+
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  .ru-title { font-size: 1.3rem; color: var(--verde); font-weight: 700; }
+  .subtitle { font-size: 0.85rem; color: var(--ink-soft); margin-top: 2px; margin-bottom: 22px; }
+
+  /* Gauge */
+  .gauge-wrap {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 14px;
+  }
+
+  .gauge-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+  .gauge-track { fill: none; stroke: var(--border); stroke-width: 14; }
+  .gauge-fill {
+    fill: none;
+    stroke: var(--status-color);
+    stroke-width: 14;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.7s cubic-bezier(.4,0,.2,1), stroke var(--transition);
+  }
+
+  .gauge-center {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 
-  .occupancy-number {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 3.8rem;
-    line-height: 1;
+  .eyebrow {
+    font-size: 0.7rem;
     font-weight: 700;
-    color: var(--texto);
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
   }
 
-  .occupancy-label {
-    font-size: 0.8rem;
-    color: var(--texto-suave);
-    margin-top: 5px;
+  .number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
   }
+
+  .label-pessoas { font-size: 0.78rem; color: var(--ink-soft); }
+  .pct-label { font-size: 0.72rem; color: var(--status-color); font-weight: 600; margin-top: 2px; }
 
   .status-badge {
     display: inline-block;
-    padding: 6px 18px;
+    padding: 8px 22px;
     border-radius: 30px;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: #ffffff;
     background: var(--status-color);
-    margin-top: 12px;
+    transition: background var(--transition);
+    margin-bottom: 6px;
   }
 
-  .capacity-wrapper {
-    width: 85%;
-    margin-top: 18px;
-  }
+  .updated-at { font-size: 0.72rem; color: var(--ink-soft); margin-top: 10px; }
 
-  .capacity-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.68rem;
-    color: var(--texto-suave);
-    margin-bottom: 7px;
-  }
-
-  .capacity-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--borda);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .capacity-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--status-color);
-    transition: width 0.5s ease;
-  }
-
-  .updated-at {
-    font-size: 0.65rem;
-    color: var(--texto-suave);
-    margin-top: 12px;
-  }
-
-  .chart-card {
-    min-height: 300px;
-  }
-
-  .chart-wrapper {
-    position: relative;
-    height: 220px;
-  }
-
-  .empty-state {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 0.72rem;
-    color: var(--texto-suave);
-    padding: 20px;
-  }
-
-  .indicators {
+  /* Info grid */
+  .info-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    gap: 10px;
+    margin-top: 22px;
   }
 
-  .indicator {
-    background: var(--card);
-    border: 1px solid var(--borda);
-    border-radius: var(--raio);
-    padding: 18px;
-    box-shadow: var(--sombra);
+  .info-card {
+    background: var(--bg);
+    padding: 14px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
   }
 
-  .indicator-label {
-    font-size: 0.75rem;
-    color: var(--texto-suave);
-  }
-
-  .indicator-value {
+  .info-card span {
+    display: block;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: var(--texto);
-    margin-top: 5px;
+    color: var(--ink);
   }
 
-  @media (max-width: 700px) {
-    .top-grid { grid-template-columns: 1fr; }
-    .indicators { grid-template-columns: 1fr; }
-    .clock { display: none; }
+  .info-card p { font-size: 0.7rem; color: var(--ink-soft); margin-top: 4px; }
+
+  /* Peak section */
+  .peak-section { text-align: left; }
+  .peak-section h3 { font-size: 1.02rem; color: var(--ink); margin-bottom: 4px; }
+  .peak-section .peak-sub { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 18px; }
+
+  .chart-box { position: relative; height: 200px; }
+
+  .empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 20px 10px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+  .empty-state svg { opacity: 0.5; }
+
+  .footer {
+    font-size: 0.75rem;
+    color: #a8b3ae;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; opacity: 1; transform: none; }
+    .live-indicator.online .live-dot { animation: none; }
+    .gauge-fill { transition: none; }
+  }
+
+  @media (max-width: 360px) {
+    .number { font-size: 2.5rem; }
+    .gauge-wrap { width: 190px; height: 190px; }
   }
 </style>
 </head>
 <body>
 
 <header class="header">
-  <div class="header-left">
-    <div class="header-title">
-      <h1>RU Inteligente</h1>
-      <p>Restaurante Universitário UFABC</p>
-    </div>
+  <div class="header-title">
+    <h2>RU Inteligente</h2>
+    <p>Universidade Federal do ABC</p>
   </div>
   <div class="header-right">
     <div class="live-indicator" id="liveIndicator">
       <span class="live-dot"></span>
-      <span id="liveText">Conectando...</span>
+      <span id="liveText">Conectando…</span>
     </div>
-    <div class="clock">
-      <div class="clock-time" id="clockTime">--:--</div>
-      <div class="clock-date" id="clockDate">--</div>
+    <div class="logo-container">
+      <img src="logo-ufabc.png" alt="Logo UFABC"
+           onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+      <div class="logo-fallback" id="logoFallback">UFABC</div>
     </div>
   </div>
 </header>
 
-<main class="main-container">
-  
-  <section class="top-grid">
-    <!-- Lotação Atual -->
-    <div class="card occupancy-card">
-      <div class="section-title">Lotação em Tempo Real</div>
-      <div class="occupancy-number" id="lotacaoDisplay">--</div>
-      <div class="occupancy-label">pessoas no RU</div>
-      <div class="status-badge" id="statusBadge">Conectando...</div>
-      
-      <div class="capacity-wrapper">
-        <div class="capacity-info">
-          <span>0</span>
-          <span>Capacidade: 50</span>
-        </div>
-        <div class="capacity-bar">
-          <div class="capacity-fill" id="capacityFill"></div>
-        </div>
-      </div>
-      
-      <div class="updated-at" id="updatedAt">Aguardando dados...</div>
-    </div>
+<div class="main-container">
 
-    <!-- Gráfico -->
-    <div class="card chart-card">
-      <div class="section-title">Movimento ao longo do dia</div>
-      <div class="section-subtitle">Pessoas registradas por horário</div>
-      <div class="chart-wrapper">
-        <canvas id="peakChart"></canvas>
-        <div class="empty-state" id="emptyState">Ainda não há dados suficientes para o histórico por horário.</div>
+  <div class="card">
+    <h1 class="ru-title">Restaurante Universitário</h1>
+    <p class="subtitle">Monitoramento em tempo real</p>
+
+    <div class="gauge-wrap">
+      <svg viewBox="0 0 200 200">
+        <circle class="gauge-track" cx="100" cy="100" r="85"></circle>
+        <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="85"
+                stroke-dasharray="534.07" stroke-dashoffset="534.07"></circle>
+      </svg>
+      <div class="gauge-center">
+        <span class="eyebrow">Agora</span>
+        <span class="number" id="lotacaoDisplay" aria-live="polite">--</span>
+        <span class="label-pessoas">pessoas</span>
+        <span class="pct-label" id="pctDisplay"></span>
       </div>
     </div>
-  </section>
 
-  <!-- Indicadores inferiores -->
-  <section class="indicators">
-    <div class="indicator">
-      <div class="indicator-label">Entradas hoje</div>
-      <div class="indicator-value" id="totalEntradaDisplay">--</div>
-    </div>
-    <div class="indicator">
-      <div class="indicator-label">Pico do dia</div>
-      <div class="indicator-value" id="picoDiaDisplay">--</div>
-    </div>
-    <div class="indicator">
-      <div class="indicator-label">Horário de pico</div>
-      <div class="indicator-value" id="horarioPicoDisplay">--</div>
-    </div>
-  </section>
+    <div id="statusBadge" class="status-badge">Conectando ao sistema…</div>
+    <div class="updated-at" id="updatedAt"></div>
 
-</main>
+    <div class="info-grid">
+      <div class="info-card">
+        <span id="totalEntradaDisplay">--</span>
+        <p>Entraram hoje</p>
+      </div>
+      <div class="info-card">
+        <span id="picoDiaDisplay">--</span>
+        <p>Pico do dia</p>
+      </div>
+      <div class="info-card">
+        <span id="ocupacaoDisplay">--</span>
+        <p>Da capacidade</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card peak-section">
+    <h3>Horários de maior movimento</h3>
+    <p class="peak-sub">Média de pessoas por horário registrada pelo sistema</p>
+    <div class="chart-box">
+      <canvas id="peakChart"></canvas>
+      <div class="empty-state" id="emptyState">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#5b6b63" stroke-width="1.6">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 7v5l3 3"></path>
+        </svg>
+        <span>Ainda não há dados suficientes. Assim que o sistema acumular histórico de mais de um dia, os horários de pico aparecem aqui automaticamente.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Projeto IoT — UFABC • <span id="ano"></span></div>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-  // Suas credenciais oficiais do Firebase integradas
+  // Credenciais do Firebase — são chaves públicas de configuração do app,
+  // não são segredo; a proteção real fica nas Regras de Segurança do Realtime Database.
   const firebaseConfig = {
     apiKey: "AIzaSyBX9h4BWdp0CeXDCBp9cHIMnTh7kJ3u5A",
     authDomain: "smart-ru-4dbc4.firebaseapp.com",
@@ -353,20 +355,43 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  const CAPACIDADE = 50;
+  // ---- Configuráveis: ajuste para os números reais do seu RU ----
+  const LIMITE_MODERADO = 20;
+  const LIMITE_LOTADO = 50; // também usado como "100% do anel" — troque se seu limite real for outro
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const CIRCUNFERENCIA = 534.07;
   let valorAtualExibido = 0;
-  let peakChart = null;
 
-  // Relógio do Header
-  function atualizarRelogio() {
-    const agora = new Date();
-    document.getElementById("clockTime").textContent = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-    document.getElementById("clockDate").textContent = agora.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+  function animarNumero(el, de, para, duracao = 500) {
+    if (reduceMotion || de === para) { el.textContent = para; return; }
+    const inicio = performance.now();
+    function passo(agora) {
+      const progresso = Math.min((agora - inicio) / duracao, 1);
+      const valor = Math.round(de + (para - de) * progresso);
+      el.textContent = valor;
+      if (progresso < 1) requestAnimationFrame(passo);
+    }
+    requestAnimationFrame(passo);
   }
-  setInterval(atualizarRelogio, 1000);
-  atualizarRelogio();
 
-  // Status de conexão com o Firebase
+  function tempoRelativo(timestamp) {
+    const segundos = Math.floor((Date.now() - timestamp) / 1000);
+    if (segundos < 5) return "agora mesmo";
+    if (segundos < 60) return `há ${segundos}s`;
+    const minutos = Math.floor(segundos / 60);
+    if (minutos < 60) return `há ${minutos} min`;
+    return `há ${Math.floor(minutos / 60)}h`;
+  }
+
+  let ultimaAtualizacao = null;
+  setInterval(() => {
+    if (ultimaAtualizacao) {
+      document.getElementById('updatedAt').textContent = `Atualizado ${tempoRelativo(ultimaAtualizacao)}`;
+    }
+  }, 1000);
+
+  // Indicador de conexão real com o Firebase
   onValue(ref(db, '.info/connected'), (snap) => {
     const indicator = document.getElementById('liveIndicator');
     const text = document.getElementById('liveText');
@@ -379,80 +404,82 @@
     }
   });
 
-  // Monitorar Lotação
-  onValue(ref(db, "RU/lotacao"), (snapshot) => {
-    const valorFirebase = snapshot.val();
-    const valor = valorFirebase !== null ? Number(valorFirebase) : 0;
-    const display = document.getElementById("lotacaoDisplay");
-    const badge = document.getElementById("statusBadge");
+  onValue(ref(db, 'RU/lotacao'), (snapshot) => {
+    const valorAtual = snapshot.val();
+    const display = document.getElementById('lotacaoDisplay');
+    const badge = document.getElementById('statusBadge');
     const root = document.documentElement;
+    const valor = valorAtual !== null ? valorAtual : 0;
 
-    display.textContent = valor;
+    animarNumero(display, valorAtualExibido, valor);
     valorAtualExibido = valor;
-    document.getElementById("updatedAt").textContent = "Atualizado agora";
+    ultimaAtualizacao = Date.now();
+    document.getElementById('updatedAt').textContent = `Atualizado ${tempoRelativo(ultimaAtualizacao)}`;
 
-    const porcentagem = Math.min((valor / CAPACIDADE) * 100, 100);
-    document.getElementById("capacityFill").style.width = `${porcentagem}%`;
+    // Anel de capacidade (usa LIMITE_LOTADO como referência de "cheio")
+    const pct = Math.min(valor / LIMITE_LOTADO, 1);
+    document.getElementById('gaugeFill').setAttribute(
+      'stroke-dashoffset', CIRCUNFERENCIA * (1 - pct)
+    );
+    document.getElementById('pctDisplay').textContent = `${Math.round(pct * 100)}% da capacidade`;
+    document.getElementById('ocupacaoDisplay').textContent = `${Math.round(pct * 100)}%`;
 
-    if (valor < 20) {
-      badge.textContent = "Tranquilo";
-      root.style.setProperty("--status-color", "#0b8457");
-    } else if (valor < CAPACIDADE) {
-      badge.textContent = "Moderado";
-      root.style.setProperty("--status-color", "#e8930c");
-    } else {
-      badge.textContent = valor > CAPACIDADE ? `Capacidade atingida (+${valor - CAPACIDADE})` : "Lotado";
-      root.style.setProperty("--status-color", "#c0392b");
-    }
-  });
-
-  // Total de Entradas
-  onValue(ref(db, "RU/totalEntrada"), (snapshot) => {
-    const valor = snapshot.val();
-    document.getElementById("totalEntradaDisplay").textContent = valor !== null ? valor : "--";
-  });
-
-  // Pico do Dia
-  onValue(ref(db, "RU/picoDia"), (snapshot) => {
-    const valor = snapshot.val();
-    document.getElementById("picoDiaDisplay").textContent = valor !== null ? valor : "--";
-  });
-
-  // Horário de Pico
-  onValue(ref(db, "RU/horarioPico"), (snapshot) => {
-    const valor = snapshot.val();
-    document.getElementById("horarioPicoDisplay").textContent = valor !== null ? `${valor}h` : "--";
-  });
-
-  // Gráfico Histórico por Hora
-  onValue(ref(db, "RU/historicoPorHora"), (snapshot) => {
-    const dados = snapshot.val();
-    const canvas = document.getElementById("peakChart");
-    const vazio = document.getElementById("emptyState");
-
-    if (!dados || Object.keys(dados).length === 0) {
-      canvas.style.display = "none";
-      vazio.style.display = "flex";
+    if (valorAtual === null) {
+      badge.textContent = "Aguardando dados…";
+      root.style.setProperty('--status-color', 'var(--verde)');
       return;
     }
-    canvas.style.display = "block";
-    vazio.style.display = "none";
+
+    if (valor < LIMITE_MODERADO) {
+      badge.textContent = "Tranquilo";
+      root.style.setProperty('--status-color', '#0b8457');
+    } else if (valor < LIMITE_LOTADO) {
+      badge.textContent = "Moderado";
+      root.style.setProperty('--status-color', '#e8930c');
+    } else {
+      badge.textContent = "Lotado";
+      root.style.setProperty('--status-color', '#c0392b');
+    }
+  });
+
+  onValue(ref(db, 'RU/totalEntrada'), (snapshot) => {
+    const total = snapshot.val();
+    document.getElementById('totalEntradaDisplay').textContent = total !== null ? total : "--";
+  });
+
+  // Pico do dia — antes não estava conectado a nada
+  onValue(ref(db, 'RU/picoDia'), (snapshot) => {
+    const pico = snapshot.val();
+    document.getElementById('picoDiaDisplay').textContent = pico !== null ? pico : "--";
+  });
+
+  // Histórico por horário, esperado no formato { "07": 5, "08": 22, ... "20": 10 }
+  onValue(ref(db, 'RU/historicoPorHora'), (snapshot) => {
+    const dados = snapshot.val();
+    const canvas = document.getElementById('peakChart');
+    const vazio = document.getElementById('emptyState');
+
+    if (!dados || Object.keys(dados).length === 0) {
+      canvas.style.display = 'none';
+      vazio.style.display = 'flex';
+      return;
+    }
+    canvas.style.display = 'block';
+    vazio.style.display = 'none';
 
     const horas = Object.keys(dados).sort();
-    const valores = horas.map(hora => Number(dados[hora]));
+    const valores = horas.map(h => dados[h]);
     const maxValor = Math.max(...valores);
 
-    if (peakChart) peakChart.destroy();
-
-    peakChart = new Chart(canvas, {
-      type: "bar",
+    new Chart(canvas, {
+      type: 'bar',
       data: {
-        labels: horas.map(hora => `${hora}h`),
+        labels: horas.map(h => `${h}h`),
         datasets: [{
           data: valores,
-          backgroundColor: valores.map(v => v === maxValor ? "#c0392b" : "#005137"),
+          backgroundColor: valores.map(v => v === maxValor ? '#c0392b' : '#005137'),
           borderRadius: 6,
-          maxBarThickness: 30
+          maxBarThickness: 26
         }]
       },
       options: {
@@ -460,14 +487,15 @@
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, grid: { color: "#eef1ef" } },
+          y: { beginAtZero: true, grid: { color: '#eef1ef' } },
           x: { grid: { display: false } }
         }
       }
     });
-  });
+  }, { onlyOnce: true });
+
+  document.getElementById('ano').textContent = new Date().getFullYear();
 </script>
 
 </body>
 </html>
-   
