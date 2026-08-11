@@ -1,31 +1,4 @@
-[17:12, 11/08/2026] duda: <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RU Inteligente — UFABC</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
-
-<style>
-:root{
-  --verde:#005137;
-  --verde-claro:#0b8457;
-  --ambar:#e8930c;
-  --vermelho:#c0392b;
-  --bg:#f7f9f7;
-  --card:#fff;
-  --ink:#17251f;
-  --ink-soft:#63736b;
-  --border:#e3e9e5;
-  --shadow:0 6px 22px rgba(0…
-[17:38, 11/08/2026] duda: graceful-gumption-d84902.netlify.app
-[17:40, 11/08/2026] duda: https://graceful-gumption-d84902.netlify.app](https://graceful-gumption-d84902.netlify.app
-[17:40, 11/08/2026] duda: https://graceful-gumption-d84902.netlify.app
-[17:48, 11/08/2026] duda: <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1920,7 +1893,7 @@ body{
     </div>
 
     <div class="metric smart-metric">
-      <div class="metric-icon">↗️</div>
+      <div class="metric-icon">↗</div>
       <div>
         <div class="metric-value" id="metricNextLevel">--</div>
         <div class="metric-label" id="metricNextLevelLabel">Próxima mudança de status</div>
@@ -1945,7 +1918,7 @@ body{
 
       <article class="meal-service lunch-service">
         <div class="meal-top">
-          <div class="meal-icon">☀️</div>
+          <div class="meal-icon">☀</div>
           <div>
             <div class="meal-name">ALMOÇO</div>
             <div class="meal-days">Segunda a sábado</div>
@@ -2184,7 +2157,7 @@ onValue(ref(db,"RU/tempoEspera/almoco"),snapshot=>{
   const nota = document.getElementById("waitLunchNote");
 
   if(valor !== null && !isNaN(Number(valor))){
-    el.textContent = ${Number(valor)} min;
+    el.textContent = `${Number(valor)} min`;
     nota.textContent = "Estimativa atual do sistema";
   }else{
     el.textContent = "-- min";
@@ -2198,7 +2171,7 @@ onValue(ref(db,"RU/tempoEspera/jantar"),snapshot=>{
   const nota = document.getElementById("waitDinnerNote");
 
   if(valor !== null && !isNaN(Number(valor))){
-    el.textContent = ${Number(valor)} min;
+    el.textContent = `${Number(valor)} min`;
     nota.textContent = "Estimativa atual do sistema";
   }else{
     el.textContent = "-- min";
@@ -2242,14 +2215,14 @@ function tempoRelativo(timestamp){
   if(segundos < 5) return "agora mesmo";
 
   if(segundos < 60)
-    return há ${segundos}s;
+    return `há ${segundos}s`;
 
   const minutos = Math.floor(segundos/60);
 
   if(minutos < 60)
-    return há ${minutos} min;
+    return `há ${minutos} min`;
 
-  return há ${Math.floor(minutos/60)}h;
+  return `há ${Math.floor(minutos/60)}h`;
 }
 
 setInterval(()=>{
@@ -2257,7 +2230,7 @@ setInterval(()=>{
   if(ultimaAtualizacao){
 
     document.getElementById("updatedAt").textContent =
-      Última atualização: ${tempoRelativo(ultimaAtualizacao)};
+      `Última atualização: ${tempoRelativo(ultimaAtualizacao)}`;
   }
 
 },1000);
@@ -2319,13 +2292,13 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
 
   document.getElementById("pctDisplay")
     .textContent =
-    ${porcentagem}% da capacidade;
+    `${porcentagem}% da capacidade`;
 
   
 
   document.getElementById("metricCapacity")
     .textContent =
-    ${porcentagem}%;
+    `${porcentagem}%`;
 
   document.getElementById("capacityNumber")
     .textContent =
@@ -2360,7 +2333,7 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
         LIMITE_MODERADO - valor;
 
       metricNextLevel.textContent =
-        +${faltam};
+        `+${faltam}`;
 
       metricNextLevelLabel.textContent =
         "Até ficar Moderado";
@@ -2374,7 +2347,7 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
         LIMITE_LOTADO - valor;
 
       metricNextLevel.textContent =
-        +${faltam};
+        `+${faltam}`;
 
       metricNextLevelLabel.textContent =
         "Até ficar Lotado";
@@ -2392,7 +2365,7 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
 
       metricNextLevelDesc.textContent =
         valor > CAPACIDADE
-          ? ${valor - CAPACIDADE} pessoa(s) acima da referência
+          ? `${valor - CAPACIDADE} pessoa(s) acima da referência`
           : "Limite de referência alcançado";
 
     }
@@ -2401,7 +2374,7 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
 
   document.getElementById("capacityFill")
     .style.width =
-    ${porcentagem}%;
+    `${porcentagem}%`;
 
   const root =
     document.documentElement;
@@ -2482,7 +2455,7 @@ onValue(ref(db,"RU/picoDia"),snapshot=>{
   document.getElementById(
     "summaryPeak"
   ).textContent =
-  ${valor} pessoas;
+  `${valor} pessoas`;
 });
 
 /* HISTÓRICO POR HORA */
@@ -2529,7 +2502,7 @@ onValue(
     document.getElementById(
       "peakHourDisplay"
     ).textContent =
-    ${horaPico}h;
+    `${horaPico}h`;
 
     document.getElementById(
       "peakValueDisplay"
@@ -2541,7 +2514,7 @@ onValue(
     document.getElementById(
       "summaryPeakHour"
     ).textContent =
-    ${horaPico}h;
+    `${horaPico}h`;
 
     if(chartInstance)
       chartInstance.destroy();
@@ -2552,7 +2525,7 @@ onValue(
 
       data:{
         labels:
-          horas.map(h=>${h}h),
+          horas.map(h=>`${h}h`),
 
         datasets:[{
 
@@ -2614,7 +2587,7 @@ const carouselFotos=[
 ];
 let carouselIndex=0,carouselTimer;
 const carouselImage=document.getElementById("carouselImage"),carouselLabel=document.getElementById("carouselLabel"),carouselDots=document.getElementById("carouselDots");
-function renderCarouselDots(){carouselDots.innerHTML=carouselFotos.map((_,i)=><button class="carousel-dot ${i===0?'active':''}" aria-label="Ir para foto ${i+1}" data-index="${i}"></button>).join("");carouselDots.querySelectorAll(".carousel-dot").forEach(b=>b.addEventListener("click",()=>showCarousel(Number(b.dataset.index),true)))}
+function renderCarouselDots(){carouselDots.innerHTML=carouselFotos.map((_,i)=>`<button class="carousel-dot ${i===0?'active':''}" aria-label="Ir para foto ${i+1}" data-index="${i}"></button>`).join("");carouselDots.querySelectorAll(".carousel-dot").forEach(b=>b.addEventListener("click",()=>showCarousel(Number(b.dataset.index),true)))}
 function showCarousel(index,manual=false){carouselIndex=(index+carouselFotos.length)%carouselFotos.length;const foto=carouselFotos[carouselIndex];carouselImage.style.opacity=".35";setTimeout(()=>{carouselImage.src=foto.src;carouselImage.alt=foto.label;carouselLabel.textContent=foto.label;carouselImage.style.opacity="1"},120);carouselDots.querySelectorAll(".carousel-dot").forEach((d,i)=>d.classList.toggle("active",i===carouselIndex));if(manual)restartCarousel()}
 function restartCarousel(){clearInterval(carouselTimer);carouselTimer=setInterval(()=>showCarousel(carouselIndex+1),4500)}
 document.getElementById("carouselPrev").addEventListener("click",()=>showCarousel(carouselIndex-1,true));document.getElementById("carouselNext").addEventListener("click",()=>showCarousel(carouselIndex+1,true));renderCarouselDots();restartCarousel();
