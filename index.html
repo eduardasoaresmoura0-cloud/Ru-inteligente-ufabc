@@ -1,4 +1,31 @@
+[17:12, 11/08/2026] duda: <!DOCTYPE html>
 <html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RU Inteligente — UFABC</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+
+<style>
+:root{
+  --verde:#005137;
+  --verde-claro:#0b8457;
+  --ambar:#e8930c;
+  --vermelho:#c0392b;
+  --bg:#f7f9f7;
+  --card:#fff;
+  --ink:#17251f;
+  --ink-soft:#63736b;
+  --border:#e3e9e5;
+  --shadow:0 6px 22px rgba(0…
+[17:38, 11/08/2026] duda: graceful-gumption-d84902.netlify.app
+[17:40, 11/08/2026] duda: https://graceful-gumption-d84902.netlify.app](https://graceful-gumption-d84902.netlify.app
+[17:40, 11/08/2026] duda: https://graceful-gumption-d84902.netlify.app
+[17:48, 11/08/2026] duda: <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1742,68 +1769,6 @@ body{
 .carousel-card{background:linear-gradient(145deg,#fff 0%,#f0faf5 100%)}
 .map-frame{width:100%;height:175px;border:0;border-radius:12px;display:block}
 @media(max-width:540px){.carousel .main-photo{height:220px}.map-frame{height:220px}}
-
-/* ===== PALETA COLORIDA — MANTÉM O VISUAL VIVO ===== */
-:root{
-  --verde:#006b4f;
-  --verde-claro:#19a974;
-  --verde-agua:#e9f8f1;
-  --ambar:#f2a51a;
-  --ambar-claro:#fff5df;
-  --roxo:#6956b8;
-  --roxo-claro:#f1effb;
-  --vermelho:#d84a3a;
-  --azul:#3d79c6;
-}
-body{
-  background:linear-gradient(180deg,#ffffff 0%,#f7fbf9 55%,#eef8f3 100%);
-}
-.header{
-  background:linear-gradient(90deg,#ffffff 0%,#f5fbf8 100%);
-  border-bottom:3px solid var(--verde);
-}
-.card,.metric,.service-panel{
-  border-color:#dcebe4;
-}
-.photo-card{
-  background:linear-gradient(145deg,#ffffff 0%,#eaf8f2 100%);
-}
-.photo-info{
-  background:linear-gradient(90deg,#ffffff,#f0faf5);
-}
-.status-badge{
-  background:linear-gradient(135deg,var(--verde-claro),#087b55);
-}
-.metric:nth-child(1) .metric-icon{background:#e9f8f1}
-.metric:nth-child(2) .metric-icon{background:#fff5df}
-.metric:nth-child(3) .metric-icon{background:#f1effb}
-.metric:nth-child(4) .metric-icon{background:#eaf2fb}
-.service-now{
-  background:linear-gradient(135deg,#e9f8f1,#f7fcfa);
-  color:var(--verde);
-}
-.meal-service:first-child{
-  background:linear-gradient(145deg,#fff,#fffaf0);
-  border-top:3px solid var(--ambar);
-}
-.meal-service.dinner-service{
-  background:linear-gradient(145deg,#fff,#f7f5ff);
-  border-top:3px solid var(--roxo);
-}
-.meal-service:first-child .meal-icon{background:var(--ambar-claro);color:#c47b00}
-.dinner-service .meal-icon{background:var(--roxo-claro);color:var(--roxo)}
-.section-title{color:var(--verde)}
-.map-frame{
-  box-shadow:inset 0 0 0 1px #dce8e2,0 5px 16px rgba(0,60,40,.08);
-}
-.footer{
-  background:linear-gradient(90deg,#005137,#00815f);
-}
-.carousel-arrow{
-  background:rgba(0,81,55,.86);
-  box-shadow:0 5px 15px rgba(0,40,28,.22);
-}
-.carousel-dot.active{background:#ffffff;box-shadow:0 0 0 2px rgba(25,169,116,.45)}
 </style>
 </head>
 
@@ -1955,7 +1920,7 @@ body{
     </div>
 
     <div class="metric smart-metric">
-      <div class="metric-icon">↗</div>
+      <div class="metric-icon">↗️</div>
       <div>
         <div class="metric-value" id="metricNextLevel">--</div>
         <div class="metric-label" id="metricNextLevelLabel">Próxima mudança de status</div>
@@ -1980,7 +1945,7 @@ body{
 
       <article class="meal-service lunch-service">
         <div class="meal-top">
-          <div class="meal-icon">☀</div>
+          <div class="meal-icon">☀️</div>
           <div>
             <div class="meal-name">ALMOÇO</div>
             <div class="meal-days">Segunda a sábado</div>
@@ -2086,8 +2051,15 @@ body{
 </main>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  onValue
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBX9h4BWdp0CeXDCBp9cHIMnTh7kJ3u5A",
@@ -2102,73 +2074,534 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+/* CONFIGURAÇÕES */
 const CAPACIDADE = 50;
 const LIMITE_MODERADO = 20;
 const LIMITE_LOTADO = 50;
+
 const CIRCUNFERENCIA = 534.07;
 let valorAtualExibido = 0;
 let ultimaAtualizacao = null;
 let chartInstance = null;
 
-// --- BUSCA DE DADOS ---
+/* RELÓGIO */
+function atualizarRelogio(){
 
-// 1. Lotação
-onValue(ref(db, "RU/lotacao"), snapshot => {
-  const valor = snapshot.val() !== null ? Number(snapshot.val()) : 0;
-  const display = document.getElementById("lotacaoDisplay");
-  
-  // Animação de número
-  animarNumero(display, valorAtualExibido, valor);
-  valorAtualExibido = valor;
-  ultimaAtualizacao = Date.now();
+  const agora = new Date();
 
-  // Gauge
-  const pct = Math.min(valor / CAPACIDADE, 1);
-  document.getElementById("gaugeFill").setAttribute("stroke-dashoffset", CIRCUNFERENCIA * (1 - pct));
-  document.getElementById("pctDisplay").textContent = `${Math.round(pct * 100)}% da capacidade`;
-  document.getElementById("capacityNumber").textContent = valor;
-  document.getElementById("capacityFill").style.width = `${Math.round(pct * 100)}%`;
+  document.getElementById("clock").textContent =
+    agora.toLocaleTimeString("pt-BR");
 
-  // Vagas e Status
-  document.getElementById("metricAvailable").textContent = Math.max(CAPACIDADE - valor, 0);
-  
-  const badge = document.getElementById("statusBadge");
-  const desc = document.getElementById("statusDescription");
-  const root = document.documentElement;
+  document.getElementById("date").textContent =
+    agora.toLocaleDateString("pt-BR", {
+      weekday:"long",
+      day:"2-digit",
+      month:"long",
+      year:"numeric"
+    });
+}
 
-  if (valor < LIMITE_MODERADO) {
-    badge.textContent = "● Tranquilo";
-    root.style.setProperty("--status-color", "#0b8457");
-    desc.textContent = "Movimento tranquilo. Há bastante espaço disponível.";
-  } else if (valor < LIMITE_LOTADO) {
-    badge.textContent = "● Moderado";
-    root.style.setProperty("--status-color", "#e8930c");
-    desc.textContent = "Movimento normal. Estamos próximos da capacidade máxima.";
-  } else {
-    badge.textContent = "● Lotado";
-    root.style.setProperty("--status-color", "#c0392b");
-    desc.textContent = "Capacidade máxima atingida.";
+atualizarRelogio();
+setInterval(atualizarRelogio,1000);
+
+/* HORÁRIO ATUAL DO SERVIÇO */
+function atualizarStatusServico(){
+
+  const agora = new Date();
+  const dia = agora.getDay();
+  const minutos = agora.getHours()*60 + agora.getMinutes();
+
+  const almocoDisponivel = dia >= 1 && dia <= 6;
+  const jantarDisponivel = dia >= 1 && dia <= 5;
+
+  const almocoAberto =
+    almocoDisponivel &&
+    minutos >= 11*60 &&
+    minutos < 14*60;
+
+  const jantarAberto =
+    jantarDisponivel &&
+    minutos >= 17*60+30 &&
+    minutos < 20*60;
+
+  const lunchStatus = document.getElementById("lunchStatus");
+  const dinnerStatus = document.getElementById("dinnerStatus");
+  const serviceNow = document.getElementById("serviceNow");
+
+  lunchStatus.classList.toggle("open",almocoAberto);
+  dinnerStatus.classList.toggle("open",jantarAberto);
+
+  lunchStatus.textContent = almocoAberto ? "ABERTO AGORA" : "FECHADO";
+  dinnerStatus.textContent = jantarAberto ? "ABERTO AGORA" : "FECHADO";
+
+  if(almocoAberto){
+
+    serviceNow.textContent =
+      "Almoço • atendimento até 14h";
+
+  }else if(jantarAberto){
+
+    serviceNow.textContent =
+      "Jantar • atendimento até 20h";
+
+  }else if(dia >= 1 && dia <= 5 && minutos < 11*60){
+
+    serviceNow.textContent =
+      "Próximo serviço: almoço às 11h";
+
+  }else if(dia >= 1 && dia <= 5 && minutos >= 14*60 && minutos < 17*60+30){
+
+    serviceNow.textContent =
+      "Próximo serviço: jantar às 17h30";
+
+  }else if(dia === 6 && minutos < 11*60){
+
+    serviceNow.textContent =
+      "Próximo serviço: almoço às 11h";
+
+  }else if(dia === 0 || dia === 6){
+
+    serviceNow.textContent =
+      "Próximo atendimento: segunda-feira às 11h";
+
+  }else{
+
+    serviceNow.textContent =
+      "Próximo atendimento: amanhã às 11h";
+
+  }
+}
+
+atualizarStatusServico();
+setInterval(atualizarStatusServico,60000);
+
+/* TEMPO ESTIMADO DE ESPERA
+   Estes caminhos podem ser preenchidos futuramente pelo ESP32/Firebase.
+   Enquanto não houver dado, o painel mostra "-- min". */
+onValue(ref(db,"RU/tempoEspera/almoco"),snapshot=>{
+  const valor = snapshot.val();
+  const el = document.getElementById("waitLunch");
+  const nota = document.getElementById("waitLunchNote");
+
+  if(valor !== null && !isNaN(Number(valor))){
+    el.textContent = ${Number(valor)} min;
+    nota.textContent = "Estimativa atual do sistema";
+  }else{
+    el.textContent = "-- min";
+    nota.textContent = "Aguardando estimativa do sistema";
   }
 });
 
-// 2. Primeira Entrada
-onValue(ref(db, "RU/primeiraEntrada"), snapshot => {
-  document.getElementById("firstEntry").textContent = snapshot.val() || "--";
+onValue(ref(db,"RU/tempoEspera/jantar"),snapshot=>{
+  const valor = snapshot.val();
+  const el = document.getElementById("waitDinner");
+  const nota = document.getElementById("waitDinnerNote");
+
+  if(valor !== null && !isNaN(Number(valor))){
+    el.textContent = ${Number(valor)} min;
+    nota.textContent = "Estimativa atual do sistema";
+  }else{
+    el.textContent = "-- min";
+    nota.textContent = "Aguardando estimativa do sistema";
+  }
 });
 
-// 3. Total Entrada
-onValue(ref(db, "RU/totalEntrada"), snapshot => {
-  document.getElementById("summaryEntries").textContent = snapshot.val() || "--";
+/* ANIMAÇÃO DO NÚMERO */
+function animarNumero(el,de,para,duracao=500){
+
+  if(de === para){
+    el.textContent = para;
+    return;
+  }
+
+  const inicio = performance.now();
+
+  function passo(agora){
+
+    const progresso =
+      Math.min((agora-inicio)/duracao,1);
+
+    const valor =
+      Math.round(de+(para-de)*progresso);
+
+    el.textContent = valor;
+
+    if(progresso < 1)
+      requestAnimationFrame(passo);
+  }
+
+  requestAnimationFrame(passo);
+}
+
+/* TEMPO RELATIVO */
+function tempoRelativo(timestamp){
+
+  const segundos =
+    Math.floor((Date.now()-timestamp)/1000);
+
+  if(segundos < 5) return "agora mesmo";
+
+  if(segundos < 60)
+    return há ${segundos}s;
+
+  const minutos = Math.floor(segundos/60);
+
+  if(minutos < 60)
+    return há ${minutos} min;
+
+  return há ${Math.floor(minutos/60)}h;
+}
+
+setInterval(()=>{
+
+  if(ultimaAtualizacao){
+
+    document.getElementById("updatedAt").textContent =
+      Última atualização: ${tempoRelativo(ultimaAtualizacao)};
+  }
+
+},1000);
+
+/* CONEXÃO */
+onValue(ref(db,".info/connected"),snap=>{
+
+  const indicator =
+    document.getElementById("liveIndicator");
+
+  const text =
+    document.getElementById("liveText");
+
+  if(snap.val() === true){
+
+    indicator.classList.add("online");
+    text.textContent = "Ao vivo";
+
+  }else{
+
+    indicator.classList.remove("online");
+    text.textContent = "Offline";
+  }
+
 });
 
-// 4. Pico do Dia
-onValue(ref(db, "RU/picoDia"), snapshot => {
-  document.getElementById("summaryPeak").textContent = `${snapshot.val() || "--"} pessoas`;
+/* LOTAÇÃO */
+onValue(ref(db,"RU/lotacao"),snapshot=>{
+
+  const valorAtual = snapshot.val();
+
+  const valor =
+    valorAtual !== null ? Number(valorAtual) : 0;
+
+  const display =
+    document.getElementById("lotacaoDisplay");
+
+  animarNumero(
+    display,
+    valorAtualExibido,
+    valor
+  );
+
+  valorAtualExibido = valor;
+
+  ultimaAtualizacao = Date.now();
+
+  const pct =
+    Math.min(valor/CAPACIDADE,1);
+
+  const porcentagem =
+    Math.round(pct*100);
+
+  document.getElementById("gaugeFill")
+    .setAttribute(
+      "stroke-dashoffset",
+      CIRCUNFERENCIA*(1-pct)
+    );
+
+  document.getElementById("pctDisplay")
+    .textContent =
+    ${porcentagem}% da capacidade;
+
+  
+
+  document.getElementById("metricCapacity")
+    .textContent =
+    ${porcentagem}%;
+
+  document.getElementById("capacityNumber")
+    .textContent =
+    valor;
+
+  /* INFORMAÇÕES DERIVADAS — sem criar novos dados no Firebase */
+  const vagasDisponiveis =
+    Math.max(CAPACIDADE - valor, 0);
+
+  const metricAvailable =
+    document.getElementById("metricAvailable");
+
+  if(metricAvailable){
+    metricAvailable.textContent =
+      vagasDisponiveis;
+  }
+
+  const metricNextLevel =
+    document.getElementById("metricNextLevel");
+
+  const metricNextLevelLabel =
+    document.getElementById("metricNextLevelLabel");
+
+  const metricNextLevelDesc =
+    document.getElementById("metricNextLevelDesc");
+
+  if(metricNextLevel && metricNextLevelLabel && metricNextLevelDesc){
+
+    if(valor < LIMITE_MODERADO){
+
+      const faltam =
+        LIMITE_MODERADO - valor;
+
+      metricNextLevel.textContent =
+        +${faltam};
+
+      metricNextLevelLabel.textContent =
+        "Até ficar Moderado";
+
+      metricNextLevelDesc.textContent =
+        "Pessoas até a próxima mudança de status";
+
+    }else if(valor < LIMITE_LOTADO){
+
+      const faltam =
+        LIMITE_LOTADO - valor;
+
+      metricNextLevel.textContent =
+        +${faltam};
+
+      metricNextLevelLabel.textContent =
+        "Até ficar Lotado";
+
+      metricNextLevelDesc.textContent =
+        "Pessoas até atingir a capacidade de referência";
+
+    }else{
+
+      metricNextLevel.textContent =
+        "Atingido";
+
+      metricNextLevelLabel.textContent =
+        "Capacidade de referência";
+
+      metricNextLevelDesc.textContent =
+        valor > CAPACIDADE
+          ? ${valor - CAPACIDADE} pessoa(s) acima da referência
+          : "Limite de referência alcançado";
+
+    }
+
+  }
+
+  document.getElementById("capacityFill")
+    .style.width =
+    ${porcentagem}%;
+
+  const root =
+    document.documentElement;
+
+  const badge =
+    document.getElementById("statusBadge");
+
+  const description =
+    document.getElementById("statusDescription");
+
+  if(valor < LIMITE_MODERADO){
+
+    badge.textContent = "●  Tranquilo";
+
+    root.style.setProperty(
+      "--status-color",
+      "#0b8457"
+    );
+
+    description.textContent =
+      "Movimento tranquilo no RU. Há bastante espaço disponível.";
+
+  }else if(valor < LIMITE_LOTADO){
+
+    badge.textContent = "●  Moderado";
+
+    root.style.setProperty(
+      "--status-color",
+      "#e8930c"
+    );
+
+    description.textContent =
+      "Movimento normal no RU. Estamos próximos da capacidade máxima.";
+
+  }else{
+
+    badge.textContent = "●  Lotado";
+
+    root.style.setProperty(
+      "--status-color",
+      "#c0392b"
+    );
+
+    description.textContent =
+      "O RU atingiu a capacidade de referência de 50 pessoas.";
+
+  }
+
 });
 
-// --- FUNÇÕES AUXILIARES (Manter as que você já tinha: animarNumero, tempoRelativo, etc) ---
-// [Cole o restante das suas funções originais aqui: atualizarRelogio, atualizarStatusServico, onValue(tempoEspera), onValue(historico)]
-// ...
+/* ENTRADAS */
+onValue(ref(db,"RU/totalEntrada"),snapshot=>{
+
+  const total = snapshot.val();
+
+  const valor =
+    total !== null ? total : "--";
+
+  const totalEntradaEl = document.getElementById("totalEntradaDisplay");
+  if(totalEntradaEl) totalEntradaEl.textContent = valor;
+
+  document.getElementById(
+    "summaryEntries"
+  ).textContent = valor;
+});
+
+/* PICO */
+onValue(ref(db,"RU/picoDia"),snapshot=>{
+
+  const pico = snapshot.val();
+
+  const valor =
+    pico !== null ? pico : "--";
+
+  const picoDiaEl = document.getElementById("picoDiaDisplay");
+  if(picoDiaEl) picoDiaEl.textContent = valor;
+
+  document.getElementById(
+    "summaryPeak"
+  ).textContent =
+  ${valor} pessoas;
+});
+
+/* HISTÓRICO POR HORA */
+onValue(
+  ref(db,"RU/historicoPorHora"),
+  snapshot=>{
+
+    const dados = snapshot.val();
+
+    const canvas =
+      document.getElementById("peakChart");
+
+    const vazio =
+      document.getElementById("emptyState");
+
+    if(
+      !dados ||
+      Object.keys(dados).length === 0
+    ){
+
+      canvas.style.display = "none";
+      vazio.style.display = "block";
+      return;
+    }
+
+    canvas.style.display = "block";
+    vazio.style.display = "none";
+
+    const horas =
+      Object.keys(dados).sort();
+
+    const valores =
+      horas.map(h=>Number(dados[h]));
+
+    const maxValor =
+      Math.max(...valores);
+
+    const indicePico =
+      valores.indexOf(maxValor);
+
+    const horaPico =
+      horas[indicePico];
+
+    document.getElementById(
+      "peakHourDisplay"
+    ).textContent =
+    ${horaPico}h;
+
+    document.getElementById(
+      "peakValueDisplay"
+    ).textContent =
+    maxValor;
+
+    
+
+    document.getElementById(
+      "summaryPeakHour"
+    ).textContent =
+    ${horaPico}h;
+
+    if(chartInstance)
+      chartInstance.destroy();
+
+    chartInstance = new Chart(canvas,{
+
+      type:"bar",
+
+      data:{
+        labels:
+          horas.map(h=>${h}h),
+
+        datasets:[{
+
+          data:valores,
+
+          backgroundColor:
+            valores.map(v=>
+              v === maxValor
+                ? "#c0392b"
+                : "#005137"
+            ),
+
+          borderRadius:5,
+          maxBarThickness:24
+        }]
+      },
+
+      options:{
+
+        responsive:true,
+        maintainAspectRatio:false,
+
+        plugins:{
+          legend:{
+            display:false
+          }
+        },
+
+        scales:{
+
+          y:{
+            beginAtZero:true,
+            grid:{
+              color:"#eef1ef"
+            }
+          },
+
+          x:{
+            grid:{
+              display:false
+            }
+          }
+        }
+      }
+    });
+
+  }
+);
+
 </script>
 
 <script>
@@ -2181,7 +2614,7 @@ const carouselFotos=[
 ];
 let carouselIndex=0,carouselTimer;
 const carouselImage=document.getElementById("carouselImage"),carouselLabel=document.getElementById("carouselLabel"),carouselDots=document.getElementById("carouselDots");
-function renderCarouselDots(){carouselDots.innerHTML=carouselFotos.map((_,i)=>`<button class="carousel-dot ${i===0?'active':''}" aria-label="Ir para foto ${i+1}" data-index="${i}"></button>`).join("");carouselDots.querySelectorAll(".carousel-dot").forEach(b=>b.addEventListener("click",()=>showCarousel(Number(b.dataset.index),true)))}
+function renderCarouselDots(){carouselDots.innerHTML=carouselFotos.map((_,i)=><button class="carousel-dot ${i===0?'active':''}" aria-label="Ir para foto ${i+1}" data-index="${i}"></button>).join("");carouselDots.querySelectorAll(".carousel-dot").forEach(b=>b.addEventListener("click",()=>showCarousel(Number(b.dataset.index),true)))}
 function showCarousel(index,manual=false){carouselIndex=(index+carouselFotos.length)%carouselFotos.length;const foto=carouselFotos[carouselIndex];carouselImage.style.opacity=".35";setTimeout(()=>{carouselImage.src=foto.src;carouselImage.alt=foto.label;carouselLabel.textContent=foto.label;carouselImage.style.opacity="1"},120);carouselDots.querySelectorAll(".carousel-dot").forEach((d,i)=>d.classList.toggle("active",i===carouselIndex));if(manual)restartCarousel()}
 function restartCarousel(){clearInterval(carouselTimer);carouselTimer=setInterval(()=>showCarousel(carouselIndex+1),4500)}
 document.getElementById("carouselPrev").addEventListener("click",()=>showCarousel(carouselIndex-1,true));document.getElementById("carouselNext").addEventListener("click",()=>showCarousel(carouselIndex+1,true));renderCarouselDots();restartCarousel();
