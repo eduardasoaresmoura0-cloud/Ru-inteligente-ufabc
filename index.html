@@ -175,15 +175,31 @@ body{
   margin-top:3px;
 }
 
-/* FOTO */
+/* FOTO / CARROSSEL */
 .photo-card{min-height:330px}
 
-.main-photo{
+.carousel-container{
+  position:relative;
   width:100%;
   height:180px;
-  object-fit:cover;
-  display:block;
+  overflow:hidden;
   background:#edf2ee;
+}
+
+.carousel-slide{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .45s ease;
+}
+
+.carousel-slide.active{
+  opacity:1;
+  visibility:visible;
 }
 
 .photo-placeholder{
@@ -195,6 +211,63 @@ body{
   background:#f0f4f1;
   color:var(--ink-soft);
   font-size:.75rem;
+}
+
+.carousel-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:3;
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.9);
+  color:var(--verde);
+  box-shadow:0 2px 8px rgba(0,40,25,.15);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  transition:transform .2s ease,background .2s ease;
+}
+
+.carousel-btn:hover{
+  background:#fff;
+  transform:translateY(-50%) scale(1.06);
+}
+
+.carousel-btn.prev{left:9px}
+.carousel-btn.next{right:9px}
+
+.carousel-dots{
+  position:absolute;
+  left:50%;
+  bottom:8px;
+  transform:translateX(-50%);
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.carousel-dot{
+  width:7px;
+  height:7px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.75);
+  box-shadow:0 1px 3px rgba(0,0,0,.18);
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.carousel-dot.active{
+  width:16px;
+  border-radius:5px;
+  background:#fff;
 }
 
 .location{
@@ -220,7 +293,20 @@ body{
   height:42px;
   object-fit:cover;
   border-radius:7px;
-  border:1px solid var(--border);
+  border:2px solid transparent;
+  opacity:.68;
+  cursor:pointer;
+  transition:opacity .2s ease,border-color .2s ease,transform .2s ease;
+}
+
+.thumb:hover{
+  opacity:.9;
+  transform:translateY(-1px);
+}
+
+.thumb.active{
+  opacity:1;
+  border-color:var(--verde);
 }
 
 /* LOTACAO */
@@ -565,19 +651,32 @@ body{
 
   <section class="top-grid">
 
-    <!-- FOTO -->
+    <!-- FOTO / CARROSSEL -->
     <div class="card photo-card">
       <div class="card-header">
         <div class="card-title">▣ &nbsp; CONHEÇA O RU</div>
         <div class="card-subtitle">Espaços do Restaurante Universitário</div>
       </div>
 
-      <img class="main-photo" src="ru-foto-1.jpg"
-           alt="Restaurante Universitário"
-           onerror="this.style.display='none';document.getElementById('photoPlaceholder').style.display='flex';">
+      <div class="carousel-container" id="ruCarousel">
+        <img class="carousel-slide active" src="ru-foto-1.jpg" alt="Restaurante Universitário - foto 1">
+        <img class="carousel-slide" src="ru-foto-2.jpg" alt="Restaurante Universitário - foto 2">
+        <img class="carousel-slide" src="ru-foto-3.jpg" alt="Restaurante Universitário - foto 3">
+        <img class="carousel-slide" src="ru-foto-4.jpg" alt="Restaurante Universitário - foto 4">
+
+        <button class="carousel-btn prev" id="prevPhoto" type="button" aria-label="Foto anterior">‹</button>
+        <button class="carousel-btn next" id="nextPhoto" type="button" aria-label="Próxima foto">›</button>
+
+        <div class="carousel-dots" id="carouselDots" aria-label="Selecionar foto">
+          <button class="carousel-dot active" type="button" data-index="0" aria-label="Foto 1"></button>
+          <button class="carousel-dot" type="button" data-index="1" aria-label="Foto 2"></button>
+          <button class="carousel-dot" type="button" data-index="2" aria-label="Foto 3"></button>
+          <button class="carousel-dot" type="button" data-index="3" aria-label="Foto 4"></button>
+        </div>
+      </div>
 
       <div class="photo-placeholder" id="photoPlaceholder" style="display:none">
-        Adicione a foto do RU
+        Adicione as fotos do RU
       </div>
 
       <div class="location">
@@ -585,11 +684,11 @@ body{
         Campus Santo André — UFABC
       </div>
 
-      <div class="thumbnails">
-        <img class="thumb" src="ru-foto-1.jpg" alt="">
-        <img class="thumb" src="ru-foto-2.jpg" alt="">
-        <img class="thumb" src="ru-foto-3.jpg" alt="">
-        <img class="thumb" src="ru-foto-4.jpg" alt="">
+      <div class="thumbnails" id="photoThumbnails">
+        <img class="thumb active" src="ru-foto-1.jpg" alt="Miniatura foto 1" data-index="0">
+        <img class="thumb" src="ru-foto-2.jpg" alt="Miniatura foto 2" data-index="1">
+        <img class="thumb" src="ru-foto-3.jpg" alt="Miniatura foto 3" data-index="2">
+        <img class="thumb" src="ru-foto-4.jpg" alt="Miniatura foto 4" data-index="3">
       </div>
     </div>
 
@@ -1162,6 +1261,75 @@ onValue(
 
   }
 );
+
+
+
+/* CARROSSEL DE FOTOS DO RU */
+const carousel = document.getElementById("ruCarousel");
+const slides = document.querySelectorAll(".carousel-slide");
+const dots = document.querySelectorAll(".carousel-dot");
+const thumbs = document.querySelectorAll("#photoThumbnails .thumb");
+const prevPhoto = document.getElementById("prevPhoto");
+const nextPhoto = document.getElementById("nextPhoto");
+
+let fotoAtual = 0;
+let intervaloFotos = null;
+
+function mostrarFoto(index){
+  if(!slides.length) return;
+
+  fotoAtual = (index + slides.length) % slides.length;
+
+  slides.forEach((slide, i) => {
+    slide.classList.toggle("active", i === fotoAtual);
+  });
+
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === fotoAtual);
+  });
+
+  thumbs.forEach((thumb, i) => {
+    thumb.classList.toggle("active", i === fotoAtual);
+  });
+}
+
+function iniciarCarrossel(){
+  clearInterval(intervaloFotos);
+  intervaloFotos = setInterval(() => {
+    mostrarFoto(fotoAtual + 1);
+  }, 5000);
+}
+
+prevPhoto.addEventListener("click", () => {
+  mostrarFoto(fotoAtual - 1);
+  iniciarCarrossel();
+});
+
+nextPhoto.addEventListener("click", () => {
+  mostrarFoto(fotoAtual + 1);
+  iniciarCarrossel();
+});
+
+dots.forEach(dot => {
+  dot.addEventListener("click", () => {
+    mostrarFoto(Number(dot.dataset.index));
+    iniciarCarrossel();
+  });
+});
+
+thumbs.forEach(thumb => {
+  thumb.addEventListener("click", () => {
+    mostrarFoto(Number(thumb.dataset.index));
+    iniciarCarrossel();
+  });
+});
+
+/* Pausa enquanto o usuário estiver olhando/interagindo com as fotos. */
+carousel.addEventListener("mouseenter", () => clearInterval(intervaloFotos));
+carousel.addEventListener("mouseleave", iniciarCarrossel);
+
+mostrarFoto(0);
+iniciarCarrossel();
 
 </script>
 
