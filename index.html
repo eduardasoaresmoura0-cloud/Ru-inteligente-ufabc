@@ -7,52 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js">
-
-/* CARROSSEL AUTOMÁTICO DE FOTOS */
-const carouselFotos = [
-  {src:"ru-foto-1.jpg", label:"Espaço do Restaurante Universitário"},
-  {src:"ru-foto-2.jpg", label:"Área interna do RU"},
-  {src:"ru-foto-3.jpg", label:"Ambiente do restaurante"},
-  {src:"ru-foto-4.jpg", label:"Campus Santo André — UFABC"}
-];
-let carouselIndex = 0;
-let carouselTimer = null;
-const carouselImage = document.getElementById("carouselImage");
-const carouselLabel = document.getElementById("carouselLabel");
-const carouselDots = document.getElementById("carouselDots");
-
-function renderCarouselDots(){
-  carouselDots.innerHTML = carouselFotos.map((_,i)=>
-    `<button class="carousel-dot ${i===0?'active':''}" aria-label="Ir para foto ${i+1}" data-index="${i}"></button>`
-  ).join("");
-  carouselDots.querySelectorAll(".carousel-dot").forEach(btn=>{
-    btn.addEventListener("click",()=>showCarousel(Number(btn.dataset.index),true));
-  });
-}
-function showCarousel(index,manual=false){
-  carouselIndex=(index+carouselFotos.length)%carouselFotos.length;
-  const foto=carouselFotos[carouselIndex];
-  carouselImage.style.opacity=".35";
-  setTimeout(()=>{
-    carouselImage.src=foto.src;
-    carouselImage.alt=foto.label;
-    carouselLabel.textContent=foto.label;
-    carouselImage.style.opacity="1";
-  },120);
-  carouselDots.querySelectorAll(".carousel-dot").forEach((dot,i)=>dot.classList.toggle("active",i===carouselIndex));
-  if(manual) restartCarousel();
-}
-function restartCarousel(){
-  clearInterval(carouselTimer);
-  carouselTimer=setInterval(()=>showCarousel(carouselIndex+1),4500);
-}
-document.getElementById("carouselPrev")?.addEventListener("click",()=>showCarousel(carouselIndex-1,true));
-document.getElementById("carouselNext")?.addEventListener("click",()=>showCarousel(carouselIndex+1,true));
-renderCarouselDots();
-restartCarousel();
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 
 <style>
 :root{
@@ -1773,49 +1728,20 @@ body{
 }
 
 
-/* =========================================================
-   CARROSSEL + MAPA + COR — NOVA CAMADA VISUAL
-========================================================= */
-.photo-card{background:linear-gradient(145deg,#ffffff 0%,#f0faf5 100%);}
-.carousel{position:relative;overflow:hidden;border-radius:0 0 14px 14px;background:#dfece6;}
-.carousel .main-photo{height:245px;transition:opacity .35s ease,transform .5s ease;}
+.carousel{position:relative;overflow:hidden;background:#dfece6}
+.carousel .main-photo{width:100%;height:245px;object-fit:cover;display:block;transition:opacity .35s ease,transform .5s ease;background:#edf2ee}
 .carousel:hover .main-photo{transform:scale(1.015)}
-.carousel-overlay{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,40,28,.02) 45%,rgba(0,40,28,.42) 100%)}
-.carousel-label{position:absolute;left:16px;bottom:13px;color:#fff;font-size:.65rem;font-weight:600;z-index:2;text-shadow:0 1px 8px rgba(0,0,0,.3)}
-.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:34px;height:34px;border:1px solid rgba(255,255,255,.65);border-radius:50%;background:rgba(0,63,45,.72);color:#fff;cursor:pointer;font-size:1rem;display:grid;place-items:center;transition:.2s}
-.carousel-arrow:hover{background:#003f2d;transform:translateY(-50%) scale(1.08)}
+.carousel-overlay{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,40,28,.02) 45%,rgba(0,40,28,.45) 100%)}
+.carousel-label{position:absolute;left:16px;bottom:13px;color:#fff;font-size:.65rem;font-weight:600;z-index:2;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:36px;height:36px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(0,63,45,.76);color:#fff;cursor:pointer;font-size:1.15rem;display:grid;place-items:center}
 .carousel-arrow.prev{left:10px}.carousel-arrow.next{right:10px}
-.carousel-dots{position:absolute;right:14px;bottom:12px;display:flex;gap:5px;z-index:3}
-.carousel-dot{width:7px;height:7px;border:0;border-radius:50%;background:rgba(255,255,255,.55);padding:0;cursor:pointer;transition:.2s}
+.carousel-dots{position:absolute;right:14px;bottom:12px;display:flex;gap:5px;z-index:3;align-items:center}
+.carousel-dot{width:7px;height:7px;border:0;border-radius:50%;background:rgba(255,255,255,.58);padding:0;cursor:pointer;transition:.2s}
 .carousel-dot.active{width:20px;border-radius:10px;background:#fff}
-.photo-info{padding:12px 16px 8px}
-.photo-info strong{display:block;color:#003f2d;font-size:.7rem}
-.photo-info span{font-size:.58rem;color:#6f7d76}
-.thumbnails{display:none!important}
-.photo-card .card-title{color:#006c49}
-
-/* cards mais vivos, sem perder o ar institucional */
-.metric:nth-child(1){border-top:3px solid #13946a;background:linear-gradient(145deg,#fff,#f0faf5)}
-.metric:nth-child(2){border-top:3px solid #e8930c;background:linear-gradient(145deg,#fff,#fff8eb)}
-.service-panel{background:linear-gradient(135deg,#fff 0%,#f3faf6 100%)}
-.lunch-service{border-top:3px solid #f0a51a!important;background:linear-gradient(145deg,#fff,#fffaf0)!important}
-.dinner-service{border-top:3px solid #5b67b8!important;background:linear-gradient(145deg,#fff,#f6f6ff)!important}
-.lunch-service .meal-icon{background:#fff0c9;color:#a96a00}
-.dinner-service .meal-icon{background:#e9eafd;color:#505ba4}
-.bottom-grid .bottom-card:nth-child(1){border-top:3px solid #13946a}
-.bottom-grid .bottom-card:nth-child(2){border-top:3px solid #006c49}
-
-/* mapa real incorporado */
-.map-frame{width:100%;height:175px;border:0;border-radius:12px;display:block;box-shadow:0 5px 18px rgba(17,55,39,.08)}
-.location-box{align-items:stretch!important}
-.location-info{display:flex;flex-direction:column;justify-content:center}
-.map-button{box-shadow:0 7px 16px rgba(0,63,45,.18)}
-
-@media(max-width:540px){
- .carousel .main-photo{height:220px}
- .map-frame{height:220px}
-}
-
+.photo-info{padding:12px 16px 10px}.photo-info strong{display:block;color:#003f2d;font-size:.7rem}.photo-info span{font-size:.58rem;color:#6f7d76}
+.carousel-card{background:linear-gradient(145deg,#fff 0%,#f0faf5 100%)}
+.map-frame{width:100%;height:175px;border:0;border-radius:12px;display:block}
+@media(max-width:540px){.carousel .main-photo{height:220px}.map-frame{height:220px}}
 </style>
 </head>
 
@@ -1863,24 +1789,17 @@ body{
   <section class="top-grid">
 
     <!-- FOTO -->
-    <div class="card photo-card">
-      <div class="card-header">
-        <div class="card-title">▣ &nbsp; CONHEÇA O RU</div>
-        <div class="card-subtitle">Espaços do Restaurante Universitário</div>
+    <div class="card photo-card carousel-card">
+      <div class="card-header"><div class="card-title">▣ &nbsp; CONHEÇA O RU</div><div class="card-subtitle">Espaços do Restaurante Universitário</div></div>
+      <div class="carousel" id="ruCarousel">
+        <img class="main-photo" id="carouselImage" src="ru-foto-1.jpg" alt="Espaço do Restaurante Universitário">
+        <div class="carousel-overlay"></div>
+        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Foto anterior">‹</button>
+        <button class="carousel-arrow next" id="carouselNext" aria-label="Próxima foto">›</button>
+        <div class="carousel-label" id="carouselLabel">Espaço do Restaurante Universitário</div>
+        <div class="carousel-dots" id="carouselDots" aria-label="Indicadores das fotos"></div>
       </div>
-
-<div class="carousel" id="ruCarousel">
-  <img class="main-photo" id="carouselImage" src="ru-foto-1.jpg" alt="Restaurante Universitário" onerror="this.dataset.failed="true";this.src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='500'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23003f2d'/%3E%3Cstop offset='1' stop-color='%2313946a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23g)'/%3E%3Ctext x='50%25' y='47%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='42' fill='white' font-weight='700'%3ERU UFABC%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='22' fill='%23d9f4e8'%3EAdicione suas fotos aqui%3C/text%3E%3C/svg%3E'">
-  <div class="carousel-overlay"></div>
-  <button class="carousel-arrow prev" id="carouselPrev" aria-label="Foto anterior">‹</button>
-  <button class="carousel-arrow next" id="carouselNext" aria-label="Próxima foto">›</button>
-  <div class="carousel-label" id="carouselLabel">Espaço do Restaurante Universitário</div>
-  <div class="carousel-dots" id="carouselDots"></div>
-</div>
-<div class="photo-info">
-  <strong>📍 Restaurante Universitário</strong>
-  <span>Campus Santo André — UFABC</span>
-</div>
+      <div class="photo-info"><strong>📍 Restaurante Universitário</strong><span>Campus Santo André — UFABC</span></div>
     </div>
 
     <!-- LOTAÇÃO -->
@@ -2091,10 +2010,7 @@ body{
           </a>
         </div>
 
-        <iframe class="map-frame"
-          title="Mapa do Restaurante Universitário UFABC"
-          loading="lazy"
-          src="https://www.google.com/maps?q=Restaurante+Universitário+UFABC+Santo+André&output=embed"></iframe>
+        <iframe class="map-frame" src="https://www.google.com/maps?q=Restaurante+Universitário+UFABC+Santo+André&output=embed" loading="lazy" title="Mapa do Restaurante Universitário UFABC"></iframe>
       </div>
     </div>
 
@@ -2661,5 +2577,20 @@ onValue(
 
 </script>
 
+<script>
+const carouselFotos=[
+{src:"ru-foto-1.jpg",label:"Espaço do Restaurante Universitário"},
+{src:"ru-foto-2.jpg",label:"Área interna do RU"},
+{src:"ru-foto-3.jpg",label:"Ambiente do restaurante"},
+{src:"ru-foto-4.jpg",label:"Campus Santo André — UFABC"},
+{src:"ru-foto-5.jpg",label:"Restaurante Universitário — UFABC"}
+];
+let carouselIndex=0,carouselTimer;
+const carouselImage=document.getElementById("carouselImage"),carouselLabel=document.getElementById("carouselLabel"),carouselDots=document.getElementById("carouselDots");
+function renderCarouselDots(){carouselDots.innerHTML=carouselFotos.map((_,i)=>`<button class="carousel-dot ${i===0?'active':''}" aria-label="Ir para foto ${i+1}" data-index="${i}"></button>`).join("");carouselDots.querySelectorAll(".carousel-dot").forEach(b=>b.addEventListener("click",()=>showCarousel(Number(b.dataset.index),true)))}
+function showCarousel(index,manual=false){carouselIndex=(index+carouselFotos.length)%carouselFotos.length;const foto=carouselFotos[carouselIndex];carouselImage.style.opacity=".35";setTimeout(()=>{carouselImage.src=foto.src;carouselImage.alt=foto.label;carouselLabel.textContent=foto.label;carouselImage.style.opacity="1"},120);carouselDots.querySelectorAll(".carousel-dot").forEach((d,i)=>d.classList.toggle("active",i===carouselIndex));if(manual)restartCarousel()}
+function restartCarousel(){clearInterval(carouselTimer);carouselTimer=setInterval(()=>showCarousel(carouselIndex+1),4500)}
+document.getElementById("carouselPrev").addEventListener("click",()=>showCarousel(carouselIndex-1,true));document.getElementById("carouselNext").addEventListener("click",()=>showCarousel(carouselIndex+1,true));renderCarouselDots();restartCarousel();
+</script>
 </body>
 </html>
