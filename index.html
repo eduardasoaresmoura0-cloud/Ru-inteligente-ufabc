@@ -1,12 +1,679 @@
-from pathlib import Path
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RU Inteligente — UFABC</title>
 
-src = Path("/mnt/data/RU_Inteligente_layout_atualizado.txt")
-out = Path("/mnt/data/RU_Inteligente_final_horarios_espera.txt")
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 
-html = src.read_text(encoding="utf-8")
+<style>
+:root{
+  --verde:#005137;
+  --verde-claro:#0b8457;
+  --ambar:#e8930c;
+  --vermelho:#c0392b;
+  --bg:#f7f9f7;
+  --card:#fff;
+  --ink:#17251f;
+  --ink-soft:#63736b;
+  --border:#e3e9e5;
+  --shadow:0 6px 22px rgba(0,40,25,.07);
+  --radius:14px;
+  --status-color:var(--verde-claro);
+}
 
-# 1) Retira os dois cards de horário/espera da faixa principal de indicadores.
-old_cards = '''    <!-- HORÁRIO DE FUNCIONAMENTO -->
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:#fff;
+  color:var(--ink);
+  min-height:100vh;
+}
+
+/* HEADER */
+.header{
+  width:100%;
+  min-height:76px;
+  background:#fff;
+  border-bottom:2px solid var(--verde);
+  padding:10px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.header-left{display:flex;align-items:center;gap:12px}
+
+.logo-container img{
+  height:42px;
+  width:auto;
+  object-fit:contain;
+}
+
+.logo-fallback{
+  display:none;
+  font-size:1.1rem;
+  font-weight:700;
+  color:var(--verde);
+}
+
+.header-title h2{
+  font-size:1.05rem;
+  color:var(--verde);
+  font-weight:700;
+}
+
+.header-title p{
+  font-size:.7rem;
+  color:var(--ink-soft);
+}
+
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.live-indicator{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:.72rem;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+
+.live-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#aab4af;
+}
+
+.live-indicator.online{
+  color:var(--verde-claro);
+}
+
+.live-indicator.online .live-dot{
+  background:var(--verde-claro);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(11,132,87,.35)}
+  50%{box-shadow:0 0 0 5px rgba(11,132,87,0)}
+}
+
+.clock-box{
+  min-width:190px;
+  padding:8px 14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:0 3px 12px rgba(0,40,25,.06);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.clock-icon{font-size:1.35rem}
+.clock-time{
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.25rem;
+  font-weight:700;
+  color:var(--ink);
+  line-height:1;
+}
+.clock-date{
+  font-size:.58rem;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+
+/* MAIN */
+.main-container{
+  width:100%;
+  max-width:1450px;
+  margin:auto;
+  padding:18px 22px 28px;
+}
+
+/* PRIMEIRA LINHA */
+.top-grid{
+  display:grid;
+  grid-template-columns:1fr 1.08fr 1.08fr;
+  gap:12px;
+}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.card-header{
+  padding:12px 16px 7px;
+}
+
+.card-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:.88rem;
+  font-weight:700;
+  color:var(--verde);
+}
+
+.card-subtitle{
+  font-size:.61rem;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+
+/* FOTO */
+.photo-card{min-height:330px}
+
+.main-photo{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  display:block;
+  background:#edf2ee;
+}
+
+.photo-placeholder{
+  width:100%;
+  height:180px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#f0f4f1;
+  color:var(--ink-soft);
+  font-size:.75rem;
+}
+
+.location{
+  padding:9px 16px 4px;
+  font-size:.66rem;
+  color:var(--ink-soft);
+}
+
+.location strong{
+  display:block;
+  color:var(--verde);
+  font-size:.68rem;
+}
+
+.thumbnails{
+  display:flex;
+  gap:6px;
+  padding:6px 10px 10px;
+}
+
+.thumb{
+  width:64px;
+  height:42px;
+  object-fit:cover;
+  border-radius:7px;
+  border:1px solid var(--border);
+}
+
+/* LOTACAO */
+.lotacao-card{padding-bottom:12px}
+
+.lotacao-content{
+  display:grid;
+  grid-template-columns:170px 1fr;
+  align-items:center;
+  gap:12px;
+  padding:4px 16px;
+}
+
+.gauge-wrap{
+  position:relative;
+  width:165px;
+  height:165px;
+  margin:auto;
+}
+
+.gauge-wrap svg{
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg);
+}
+
+.gauge-track{
+  fill:none;
+  stroke:#e8ece9;
+  stroke-width:13;
+}
+
+.gauge-fill{
+  fill:none;
+  stroke:var(--status-color);
+  stroke-width:13;
+  stroke-linecap:round;
+  transition:stroke-dashoffset .7s,stroke .4s;
+}
+
+.gauge-center{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.eyebrow{
+  font-size:.58rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  color:var(--ink-soft);
+}
+
+.number{
+  font-family:'JetBrains Mono',monospace;
+  font-size:2.55rem;
+  font-weight:700;
+  line-height:1.05;
+}
+
+.label-pessoas{font-size:.65rem;color:var(--ink-soft)}
+.pct-label{font-size:.6rem;color:var(--status-color);font-weight:700}
+
+.status-area{display:flex;flex-direction:column;gap:10px}
+
+.status-label{
+  font-size:.58rem;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+  font-weight:600;
+}
+
+.status-badge{
+  display:inline-flex;
+  width:max-content;
+  align-items:center;
+  gap:7px;
+  padding:8px 17px;
+  border-radius:25px;
+  font-size:.72rem;
+  font-weight:700;
+  color:#fff;
+  background:var(--status-color);
+}
+
+.status-description{
+  font-size:.62rem;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+
+.capacity-title{
+  display:flex;
+  justify-content:space-between;
+  font-size:.61rem;
+  margin-bottom:5px;
+}
+
+.capacity-title strong{font-size:.75rem}
+
+.capacity-bar{
+  height:9px;
+  background:#e8ece9;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.capacity-fill{
+  height:100%;
+  width:0%;
+  background:var(--status-color);
+  transition:width .7s,background .4s;
+}
+
+.capacity-small{
+  font-size:.57rem;
+  color:var(--ink-soft);
+  margin-top:4px;
+}
+
+.updated-at{
+  padding:2px 16px 0;
+  font-size:.58rem;
+  color:var(--ink-soft);
+}
+
+/* GRAFICO */
+.chart-card{padding-bottom:10px}
+
+.chart-box{
+  height:230px;
+  padding:5px 12px 8px;
+}
+
+.peak-info{
+  margin:0 12px;
+  padding:9px 12px;
+  background:#f0f7f2;
+  border-radius:10px;
+  font-size:.62rem;
+  color:var(--ink);
+}
+
+.peak-info strong{color:var(--verde)}
+
+/* INDICADORES */
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.metric{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px 15px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:var(--shadow);
+  background:#fff;
+}
+
+.metric-icon{
+  width:38px;height:38px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.05rem;
+  background:#edf7f0;
+}
+
+.metric-value{
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.25rem;
+  font-weight:700;
+}
+
+.metric-hours{
+  font-size:1.05rem;
+  white-space:nowrap;
+}
+
+.metric-label{font-size:.65rem;font-weight:600}
+.metric-desc{font-size:.52rem;color:var(--ink-soft)}
+
+/* PARTE INFERIOR */
+.bottom-grid{
+  display:grid;
+  grid-template-columns:1fr 1.35fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+.bottom-card{
+  padding:16px 18px;
+  min-height:180px;
+}
+
+.section-title{
+  color:var(--verde);
+  font-size:.85rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:7px 4px;
+  border-bottom:1px solid #edf0ee;
+  font-size:.62rem;
+}
+
+.summary-row:last-child{border-bottom:0}
+.summary-row span{color:var(--ink-soft)}
+.summary-row strong{font-family:'JetBrains Mono',monospace}
+
+.location-box{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  align-items:center;
+}
+
+.location-info strong{
+  display:block;
+  font-size:.72rem;
+  color:var(--ink);
+  margin-bottom:4px;
+}
+
+.location-info p{
+  font-size:.6rem;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+
+.map-placeholder{
+  min-height:125px;
+  border-radius:10px;
+  background:#eef3ee;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:.65rem;
+}
+
+.map-button{
+  display:inline-block;
+  margin-top:10px;
+  padding:7px 12px;
+  background:var(--verde);
+  color:#fff;
+  text-decoration:none;
+  border-radius:7px;
+  font-size:.6rem;
+}
+
+/* RODAPE */
+.footer{
+  margin-top:14px;
+  padding:9px 15px;
+  background:var(--verde);
+  color:#fff;
+  font-size:.58rem;
+  display:flex;
+  justify-content:space-between;
+  border-radius:8px;
+}
+
+/* RESPONSIVO */
+@media(max-width:1050px){
+  .top-grid{grid-template-columns:1fr 1fr}
+  .chart-card{grid-column:1/-1}
+}
+
+@media(max-width:760px){
+  .header{padding:10px 15px}
+  .header-title p{display:none}
+  .clock-box{min-width:auto}
+  .clock-date{display:none}
+  .top-grid,.bottom-grid{grid-template-columns:1fr}
+  .chart-card{grid-column:auto}
+  .metrics{grid-template-columns:1fr 1fr}
+  .lotacao-content{grid-template-columns:150px 1fr}
+}
+
+@media(max-width:500px){
+  .main-container{padding:10px}
+  .header-right{gap:8px}
+  .live-indicator{display:none}
+  .clock-time{font-size:1rem}
+  .metrics{grid-template-columns:1fr}
+  .lotacao-content{grid-template-columns:1fr}
+  .footer{flex-direction:column;gap:4px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo-container">
+      <img src="logo-ufabc.png" alt="Logo UFABC"
+        onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block';">
+      <div class="logo-fallback" id="logoFallback">UFABC</div>
+    </div>
+
+    <div class="header-title">
+      <h2>RU Inteligente</h2>
+      <p>Universidade Federal do ABC</p>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="live-indicator" id="liveIndicator">
+      <span class="live-dot"></span>
+      <span id="liveText">Conectando…</span>
+    </div>
+
+    <div class="clock-box">
+      <div class="clock-icon">◷</div>
+      <div>
+        <div class="clock-time" id="clock">--:--:--</div>
+        <div class="clock-date" id="date">--</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="main-container">
+
+  <section class="top-grid">
+
+    <!-- FOTO -->
+    <div class="card photo-card">
+      <div class="card-header">
+        <div class="card-title">▣ &nbsp; CONHEÇA O RU</div>
+        <div class="card-subtitle">Espaços do Restaurante Universitário</div>
+      </div>
+
+      <img class="main-photo" src="ru-foto-1.jpg"
+           alt="Restaurante Universitário"
+           onerror="this.style.display='none';document.getElementById('photoPlaceholder').style.display='flex';">
+
+      <div class="photo-placeholder" id="photoPlaceholder" style="display:none">
+        Adicione a foto do RU
+      </div>
+
+      <div class="location">
+        📍 <strong>Restaurante Universitário</strong>
+        Campus Santo André — UFABC
+      </div>
+
+      <div class="thumbnails">
+        <img class="thumb" src="ru-foto-1.jpg" alt="">
+        <img class="thumb" src="ru-foto-2.jpg" alt="">
+        <img class="thumb" src="ru-foto-3.jpg" alt="">
+        <img class="thumb" src="ru-foto-4.jpg" alt="">
+      </div>
+    </div>
+
+    <!-- LOTAÇÃO -->
+    <div class="card lotacao-card">
+      <div class="card-header" style="text-align:center">
+        <div class="card-title" style="justify-content:center">RESTAURANTE UNIVERSITÁRIO</div>
+        <div class="card-subtitle">Monitoramento em tempo real</div>
+      </div>
+
+      <div class="lotacao-content">
+
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 200 200">
+            <circle class="gauge-track" cx="100" cy="100" r="85"></circle>
+            <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="85"
+              stroke-dasharray="534.07" stroke-dashoffset="534.07"></circle>
+          </svg>
+
+          <div class="gauge-center">
+            <span class="eyebrow">AGORA</span>
+            <span class="number" id="lotacaoDisplay">--</span>
+            <span class="label-pessoas">pessoas</span>
+            <span class="pct-label" id="pctDisplay"></span>
+          </div>
+        </div>
+
+        <div class="status-area">
+          <div>
+            <div class="status-label">Situação atual</div>
+            <div id="statusBadge" class="status-badge">Conectando…</div>
+          </div>
+
+          <div class="status-description" id="statusDescription">
+            Aguardando informações do sistema.
+          </div>
+
+          <div>
+            <div class="capacity-title">
+              <span>OCUPAÇÃO</span>
+              <strong id="ocupacaoDisplay">--%</strong>
+            </div>
+
+            <div class="capacity-bar">
+              <div class="capacity-fill" id="capacityFill"></div>
+            </div>
+
+            <div class="capacity-small">
+              <span id="capacityNumber">--</span> de 50 pessoas
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="updated-at" id="updatedAt"></div>
+    </div>
+
+    <!-- GRAFICO -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <div class="card-title">▥ &nbsp; MOVIMENTO AO LONGO DO DIA</div>
+        <div class="card-subtitle">Média de pessoas por horário registrada pelo sistema</div>
+      </div>
+
+      <div class="chart-box">
+        <canvas id="peakChart"></canvas>
+        <div id="emptyState" style="display:none;text-align:center;padding:60px 15px;color:var(--ink-soft);font-size:.7rem">
+          Ainda não há dados suficientes para mostrar o histórico.
+        </div>
+      </div>
+
+      <div class="peak-info">
+        <strong>Horário de maior movimento:</strong>
+        <span id="peakHourDisplay">--</span><br>
+        <span>Média de <strong id="peakValueDisplay">--</strong> pessoas</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- INDICADORES -->
+  <section class="metrics">
+
+    <!-- HORÁRIO DE FUNCIONAMENTO -->
     <div class="metric">
       <div class="metric-icon">🕐</div>
       <div>
@@ -26,188 +693,476 @@ old_cards = '''    <!-- HORÁRIO DE FUNCIONAMENTO -->
       </div>
     </div>
 
-'''
-
-if old_cards not in html:
-    raise RuntimeError("Não encontrei os cards atuais de horário e espera.")
-
-html = html.replace(old_cards, "", 1)
-
-# 2) Cria uma área específica para essas duas informações logo abaixo dos indicadores.
-anchor = '''  </section>
-
-  <!-- RESUMO / LOCAL -->'''
-
-new_section = '''  </section>
-
-  <!-- HORÁRIOS E TEMPO DE ESPERA -->
-  <section class="service-info">
-
-    <div class="service-card">
-      <div class="service-card-icon">🕐</div>
-
-      <div class="service-card-content">
-        <div class="service-title">HORÁRIO DE FUNCIONAMENTO</div>
-
-        <div class="service-columns">
-          <div class="service-item">
-            <span>ALMOÇO</span>
-            <strong>11h às 14h</strong>
-            <small>Segunda a sábado</small>
-          </div>
-
-          <div class="service-item">
-            <span>JANTAR</span>
-            <strong>17h30 às 20h</strong>
-            <small>Segunda a sexta-feira</small>
-          </div>
-        </div>
+    <div class="metric">
+      <div class="metric-icon">◉</div>
+      <div>
+        <div class="metric-value" id="metricCapacity">--%</div>
+        <div class="metric-label">Da capacidade</div>
+        <div class="metric-desc">Ocupação atual do RU</div>
       </div>
     </div>
 
-    <div class="service-card">
-      <div class="service-card-icon wait-icon">⏱</div>
+    <div class="metric">
+      <div class="metric-icon">◷</div>
+      <div>
+        <div class="metric-value" id="metricPeakHour">--</div>
+        <div class="metric-label">Horário de pico</div>
+        <div class="metric-desc">Maior movimento do dia</div>
+      </div>
+    </div>
 
-      <div class="service-card-content">
-        <div class="service-title">TEMPO DE ESPERA ESTIMADO</div>
+  </section>
 
-        <div class="service-columns">
-          <div class="service-item">
-            <span>ALMOÇO</span>
-            <strong id="waitLunch">Em breve</strong>
-            <small>Estimativa baseada no movimento</small>
-          </div>
+  <!-- RESUMO / LOCAL -->
+  <section class="bottom-grid">
 
-          <div class="service-item">
-            <span>JANTAR</span>
-            <strong id="waitDinner">Em breve</strong>
-            <small>Estimativa baseada no movimento</small>
-          </div>
+    <div class="card bottom-card">
+      <div class="section-title">RESUMO DE HOJE</div>
+
+      <div class="summary-row">
+        <span>Primeira entrada</span>
+        <strong id="firstEntry">--</strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Maior movimento</span>
+        <strong id="summaryPeakHour">--</strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Pico de lotação</span>
+        <strong id="summaryPeak">-- pessoas</strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Entradas registradas</span>
+        <strong id="summaryEntries">--</strong>
+      </div>
+    </div>
+
+    <div class="card bottom-card">
+      <div class="section-title">📍 ONDE ESTAMOS</div>
+
+      <div class="location-box">
+        <div class="location-info">
+          <strong>Restaurante Universitário</strong>
+          <p>UFABC — Campus Santo André</p>
+          <p>R. Oratório, 305 — Bangú<br>Santo André — SP</p>
+
+          <a class="map-button"
+             href="https://www.google.com/maps/search/?api=1&query=Restaurante+Universitário+UFABC+Santo+André"
+             target="_blank">
+            Ver no mapa
+          </a>
+        </div>
+
+        <div class="map-placeholder">
+          📍<br>
+          Restaurante Universitário<br>
+          UFABC — Santo André
         </div>
       </div>
     </div>
 
   </section>
 
-  <!-- RESUMO / LOCAL -->'''
+  <footer class="footer">
+    <span>◉ Projeto IoT — Monitoramento de pessoas no RU • UFABC</span>
+    <span>Dados em tempo real via Firebase e ESP32</span>
+  </footer>
 
-if anchor not in html:
-    raise RuntimeError("Não encontrei o local correto para inserir a nova área.")
+</main>
 
-html = html.replace(anchor, new_section, 1)
+<script type="module">
 
-# 3) CSS da nova área. O restante do visual é preservado.
-css_anchor = '''.metric-desc{font-size:.52rem;color:var(--ink-soft)}
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 
-/* PARTE INFERIOR */'''
+import {
+  getDatabase,
+  ref,
+  onValue
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-css_new = '''.metric-desc{font-size:.52rem;color:var(--ink-soft)}
+const firebaseConfig = {
+  apiKey: "AIzaSyBX9h4BWdp0CeXDCBp9cHIMnTh7kJ3u5A",
+  authDomain: "smart-ru-4dbc4.firebaseapp.com",
+  databaseURL: "https://smart-ru-4dbc4-default-rtdb.firebaseio.com",
+  projectId: "smart-ru-4dbc4",
+  storageBucket: "smart-ru-4dbc4.appspot.com",
+  messagingSenderId: "584883088388",
+  appId: "1:584883088388:web:9d15f74b7cf41530011951"
+};
 
-/* HORÁRIOS E TEMPO DE ESPERA */
-.service-info{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:12px;
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* CONFIGURAÇÕES */
+const CAPACIDADE = 50;
+const LIMITE_MODERADO = 20;
+const LIMITE_LOTADO = 50;
+
+const CIRCUNFERENCIA = 534.07;
+let valorAtualExibido = 0;
+let ultimaAtualizacao = null;
+let chartInstance = null;
+
+/* RELÓGIO */
+function atualizarRelogio(){
+
+  const agora = new Date();
+
+  document.getElementById("clock").textContent =
+    agora.toLocaleTimeString("pt-BR");
+
+  document.getElementById("date").textContent =
+    agora.toLocaleDateString("pt-BR", {
+      weekday:"long",
+      day:"2-digit",
+      month:"long",
+      year:"numeric"
+    });
 }
 
-.service-card{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:12px;
-  box-shadow:var(--shadow);
-  padding:15px 17px;
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
+atualizarRelogio();
+setInterval(atualizarRelogio,1000);
+
+/* ANIMAÇÃO DO NÚMERO */
+function animarNumero(el,de,para,duracao=500){
+
+  if(de === para){
+    el.textContent = para;
+    return;
+  }
+
+  const inicio = performance.now();
+
+  function passo(agora){
+
+    const progresso =
+      Math.min((agora-inicio)/duracao,1);
+
+    const valor =
+      Math.round(de+(para-de)*progresso);
+
+    el.textContent = valor;
+
+    if(progresso < 1)
+      requestAnimationFrame(passo);
+  }
+
+  requestAnimationFrame(passo);
 }
 
-.service-card-icon{
-  width:38px;
-  height:38px;
-  min-width:38px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:1.05rem;
-  background:#edf7f0;
+/* TEMPO RELATIVO */
+function tempoRelativo(timestamp){
+
+  const segundos =
+    Math.floor((Date.now()-timestamp)/1000);
+
+  if(segundos < 5) return "agora mesmo";
+
+  if(segundos < 60)
+    return `há ${segundos}s`;
+
+  const minutos = Math.floor(segundos/60);
+
+  if(minutos < 60)
+    return `há ${minutos} min`;
+
+  return `há ${Math.floor(minutos/60)}h`;
 }
 
-.wait-icon{
-  background:#f2efff;
-}
+setInterval(()=>{
 
-.service-card-content{
-  flex:1;
-}
+  if(ultimaAtualizacao){
 
-.service-title{
-  color:var(--verde);
-  font-size:.68rem;
-  font-weight:700;
-  margin-bottom:10px;
-}
+    document.getElementById("updatedAt").textContent =
+      `Última atualização: ${tempoRelativo(ultimaAtualizacao)}`;
+  }
 
-.service-columns{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-}
+},1000);
 
-.service-item{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
+/* CONEXÃO */
+onValue(ref(db,".info/connected"),snap=>{
 
-.service-item span{
-  color:var(--ink-soft);
-  font-size:.55rem;
-  font-weight:700;
-  letter-spacing:.05em;
-}
+  const indicator =
+    document.getElementById("liveIndicator");
 
-.service-item strong{
-  color:var(--ink);
-  font-family:'JetBrains Mono',monospace;
-  font-size:.82rem;
-}
+  const text =
+    document.getElementById("liveText");
 
-.service-item small{
-  color:var(--ink-soft);
-  font-size:.52rem;
-  line-height:1.3;
-}
+  if(snap.val() === true){
 
-/* PARTE INFERIOR */'''
+    indicator.classList.add("online");
+    text.textContent = "Ao vivo";
 
-if css_anchor not in html:
-    raise RuntimeError("Não encontrei o local correto do CSS.")
+  }else{
 
-html = html.replace(css_anchor, css_new, 1)
+    indicator.classList.remove("online");
+    text.textContent = "Offline";
+  }
 
-# 4) Responsividade da nova seção.
-media_anchor = '''  .metrics{grid-template-columns:1fr 1fr}
-  .lotacao-content{grid-template-columns:150px 1fr}'''
+});
 
-media_new = '''  .metrics{grid-template-columns:1fr 1fr}
-  .service-info{grid-template-columns:1fr}
-  .lotacao-content{grid-template-columns:150px 1fr}'''
+/* LOTAÇÃO */
+onValue(ref(db,"RU/lotacao"),snapshot=>{
 
-if media_anchor in html:
-    html = html.replace(media_anchor, media_new, 1)
+  const valorAtual = snapshot.val();
 
-mobile_anchor = '''  .metrics{grid-template-columns:1fr}
-  .lotacao-content{grid-template-columns:1fr}'''
+  const valor =
+    valorAtual !== null ? Number(valorAtual) : 0;
 
-mobile_new = '''  .metrics{grid-template-columns:1fr}
-  .service-columns{grid-template-columns:1fr 1fr}
-  .lotacao-content{grid-template-columns:1fr}'''
+  const display =
+    document.getElementById("lotacaoDisplay");
 
-if mobile_anchor in html:
-    html = html.replace(mobile_anchor, mobile_new, 1)
+  animarNumero(
+    display,
+    valorAtualExibido,
+    valor
+  );
 
-out.write_text(html, encoding="utf-8")
+  valorAtualExibido = valor;
 
-print(f"Arquivo pronto: {out}")
+  ultimaAtualizacao = Date.now();
+
+  const pct =
+    Math.min(valor/CAPACIDADE,1);
+
+  const porcentagem =
+    Math.round(pct*100);
+
+  document.getElementById("gaugeFill")
+    .setAttribute(
+      "stroke-dashoffset",
+      CIRCUNFERENCIA*(1-pct)
+    );
+
+  document.getElementById("pctDisplay")
+    .textContent =
+    `${porcentagem}% da capacidade`;
+
+  document.getElementById("ocupacaoDisplay")
+    .textContent =
+    `${porcentagem}%`;
+
+  document.getElementById("metricCapacity")
+    .textContent =
+    `${porcentagem}%`;
+
+  document.getElementById("capacityNumber")
+    .textContent =
+    valor;
+
+  document.getElementById("capacityFill")
+    .style.width =
+    `${porcentagem}%`;
+
+  const root =
+    document.documentElement;
+
+  const badge =
+    document.getElementById("statusBadge");
+
+  const description =
+    document.getElementById("statusDescription");
+
+  if(valor < LIMITE_MODERADO){
+
+    badge.textContent = "●  Tranquilo";
+
+    root.style.setProperty(
+      "--status-color",
+      "#0b8457"
+    );
+
+    description.textContent =
+      "Movimento tranquilo no RU. Há bastante espaço disponível.";
+
+  }else if(valor < LIMITE_LOTADO){
+
+    badge.textContent = "●  Moderado";
+
+    root.style.setProperty(
+      "--status-color",
+      "#e8930c"
+    );
+
+    description.textContent =
+      "Movimento normal no RU. Estamos próximos da capacidade máxima.";
+
+  }else{
+
+    badge.textContent = "●  Lotado";
+
+    root.style.setProperty(
+      "--status-color",
+      "#c0392b"
+    );
+
+    description.textContent =
+      "O RU atingiu a capacidade de referência de 50 pessoas.";
+
+  }
+
+});
+
+/* ENTRADAS */
+onValue(ref(db,"RU/totalEntrada"),snapshot=>{
+
+  const total = snapshot.val();
+
+  const valor =
+    total !== null ? total : "--";
+
+  document.getElementById(
+    "totalEntradaDisplay"
+  ).textContent = valor;
+
+  document.getElementById(
+    "summaryEntries"
+  ).textContent = valor;
+});
+
+/* PICO */
+onValue(ref(db,"RU/picoDia"),snapshot=>{
+
+  const pico = snapshot.val();
+
+  const valor =
+    pico !== null ? pico : "--";
+
+  document.getElementById(
+    "picoDiaDisplay"
+  ).textContent = valor;
+
+  document.getElementById(
+    "summaryPeak"
+  ).textContent =
+  `${valor} pessoas`;
+});
+
+/* HISTÓRICO POR HORA */
+onValue(
+  ref(db,"RU/historicoPorHora"),
+  snapshot=>{
+
+    const dados = snapshot.val();
+
+    const canvas =
+      document.getElementById("peakChart");
+
+    const vazio =
+      document.getElementById("emptyState");
+
+    if(
+      !dados ||
+      Object.keys(dados).length === 0
+    ){
+
+      canvas.style.display = "none";
+      vazio.style.display = "block";
+      return;
+    }
+
+    canvas.style.display = "block";
+    vazio.style.display = "none";
+
+    const horas =
+      Object.keys(dados).sort();
+
+    const valores =
+      horas.map(h=>Number(dados[h]));
+
+    const maxValor =
+      Math.max(...valores);
+
+    const indicePico =
+      valores.indexOf(maxValor);
+
+    const horaPico =
+      horas[indicePico];
+
+    document.getElementById(
+      "peakHourDisplay"
+    ).textContent =
+    `${horaPico}h`;
+
+    document.getElementById(
+      "peakValueDisplay"
+    ).textContent =
+    maxValor;
+
+    document.getElementById(
+      "metricPeakHour"
+    ).textContent =
+    `${horaPico}h`;
+
+    document.getElementById(
+      "summaryPeakHour"
+    ).textContent =
+    `${horaPico}h`;
+
+    if(chartInstance)
+      chartInstance.destroy();
+
+    chartInstance = new Chart(canvas,{
+
+      type:"bar",
+
+      data:{
+        labels:
+          horas.map(h=>`${h}h`),
+
+        datasets:[{
+
+          data:valores,
+
+          backgroundColor:
+            valores.map(v=>
+              v === maxValor
+                ? "#c0392b"
+                : "#005137"
+            ),
+
+          borderRadius:5,
+          maxBarThickness:24
+        }]
+      },
+
+      options:{
+
+        responsive:true,
+        maintainAspectRatio:false,
+
+        plugins:{
+          legend:{
+            display:false
+          }
+        },
+
+        scales:{
+
+          y:{
+            beginAtZero:true,
+            grid:{
+              color:"#eef1ef"
+            }
+          },
+
+          x:{
+            grid:{
+              display:false
+            }
+          }
+        }
+      }
+    });
+
+  }
+);
+
+</script>
+
+</body>
+</html>
