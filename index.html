@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -174,15 +175,31 @@ body{
   margin-top:3px;
 }
 
-/* FOTO */
+/* FOTO / CARROSSEL */
 .photo-card{min-height:330px}
 
-.main-photo{
+.carousel-container{
+  position:relative;
   width:100%;
   height:180px;
-  object-fit:cover;
-  display:block;
+  overflow:hidden;
   background:#edf2ee;
+}
+
+.carousel-slide{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .45s ease;
+}
+
+.carousel-slide.active{
+  opacity:1;
+  visibility:visible;
 }
 
 .photo-placeholder{
@@ -194,6 +211,63 @@ body{
   background:#f0f4f1;
   color:var(--ink-soft);
   font-size:.75rem;
+}
+
+.carousel-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:3;
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.9);
+  color:var(--verde);
+  box-shadow:0 2px 8px rgba(0,40,25,.15);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  transition:transform .2s ease,background .2s ease;
+}
+
+.carousel-btn:hover{
+  background:#fff;
+  transform:translateY(-50%) scale(1.06);
+}
+
+.carousel-btn.prev{left:9px}
+.carousel-btn.next{right:9px}
+
+.carousel-dots{
+  position:absolute;
+  left:50%;
+  bottom:8px;
+  transform:translateX(-50%);
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.carousel-dot{
+  width:7px;
+  height:7px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.75);
+  box-shadow:0 1px 3px rgba(0,0,0,.18);
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.carousel-dot.active{
+  width:16px;
+  border-radius:5px;
+  background:#fff;
 }
 
 .location{
@@ -219,7 +293,20 @@ body{
   height:42px;
   object-fit:cover;
   border-radius:7px;
-  border:1px solid var(--border);
+  border:2px solid transparent;
+  opacity:.68;
+  cursor:pointer;
+  transition:opacity .2s ease,border-color .2s ease,transform .2s ease;
+}
+
+.thumb:hover{
+  opacity:.9;
+  transform:translateY(-1px);
+}
+
+.thumb.active{
+  opacity:1;
+  border-color:var(--verde);
 }
 
 /* LOTACAO */
@@ -411,171 +498,6 @@ body{
 .metric-label{font-size:.65rem;font-weight:600}
 .metric-desc{font-size:.52rem;color:var(--ink-soft)}
 
-.metrics-compact{
-  grid-template-columns:repeat(2,minmax(0,1fr));
-}
-
-/* HORÁRIOS E FILA */
-.service-panel{
-  margin-top:12px;
-  padding:18px;
-  background:linear-gradient(135deg,#ffffff 0%,#f8fbf9 100%);
-  border:1px solid var(--border);
-  border-radius:16px;
-  box-shadow:var(--shadow);
-}
-
-.service-heading{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  margin-bottom:14px;
-}
-
-.service-kicker{
-  color:var(--verde);
-  font-size:.58rem;
-  font-weight:700;
-  letter-spacing:.10em;
-}
-
-.service-heading h3{
-  margin-top:3px;
-  font-size:.95rem;
-  color:var(--ink);
-}
-
-.service-now{
-  padding:7px 12px;
-  border-radius:20px;
-  background:#edf7f0;
-  color:var(--verde);
-  font-size:.6rem;
-  font-weight:700;
-  white-space:nowrap;
-}
-
-.service-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.meal-service{
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:#fff;
-  padding:16px;
-}
-
-.meal-top{
-  display:grid;
-  grid-template-columns:40px 1fr auto;
-  gap:10px;
-  align-items:center;
-}
-
-.meal-icon{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#edf7f0;
-  color:var(--verde);
-  font-size:1.2rem;
-  font-weight:700;
-}
-
-.dinner-service .meal-icon{
-  background:#f2f1fb;
-}
-
-.meal-name{
-  color:var(--verde);
-  font-size:.72rem;
-  font-weight:700;
-  letter-spacing:.06em;
-}
-
-.meal-days{
-  color:var(--ink-soft);
-  font-size:.55rem;
-  margin-top:2px;
-}
-
-.meal-status{
-  padding:5px 9px;
-  border-radius:15px;
-  background:#f0f2f1;
-  color:var(--ink-soft);
-  font-size:.52rem;
-  font-weight:700;
-}
-
-.meal-status.open{
-  background:#e8f6ee;
-  color:var(--verde-claro);
-}
-
-.meal-time-row{
-  margin-top:14px;
-  padding:10px 12px;
-  background:#f8faf9;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.meal-time-row span{
-  color:var(--ink-soft);
-  font-size:.58rem;
-}
-
-.meal-time-row strong{
-  font-family:'JetBrains Mono',monospace;
-  font-size:1.02rem;
-  color:var(--ink);
-}
-
-.wait-box{
-  margin-top:10px;
-  padding:11px 12px;
-  border:1px dashed #dbe5df;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  gap:12px;
-}
-
-.wait-label{
-  display:block;
-  color:var(--ink-soft);
-  font-size:.50rem;
-  font-weight:700;
-  letter-spacing:.05em;
-}
-
-.wait-value{
-  display:block;
-  margin-top:3px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:1rem;
-  color:var(--verde);
-}
-
-.wait-box small{
-  max-width:150px;
-  text-align:right;
-  color:var(--ink-soft);
-  font-size:.50rem;
-  line-height:1.3;
-}
-
 /* PARTE INFERIOR */
 .bottom-grid{
   display:grid;
@@ -678,7 +600,6 @@ body{
   .top-grid,.bottom-grid{grid-template-columns:1fr}
   .chart-card{grid-column:auto}
   .metrics{grid-template-columns:1fr 1fr}
-  .service-grid{grid-template-columns:1fr}
   .lotacao-content{grid-template-columns:150px 1fr}
 }
 
@@ -688,1045 +609,9 @@ body{
   .live-indicator{display:none}
   .clock-time{font-size:1rem}
   .metrics{grid-template-columns:1fr}
-  .service-heading{align-items:flex-start;flex-direction:column}
-  .meal-top{grid-template-columns:40px 1fr}
-  .meal-status{grid-column:2;width:max-content}
-  .wait-box{align-items:flex-start;flex-direction:column}
-  .wait-box small{text-align:left;max-width:none}
   .lotacao-content{grid-template-columns:1fr}
   .footer{flex-direction:column;gap:4px}
 }
-
-/* =========================================================
-   REFINO VISUAL PROFISSIONAL
-========================================================= */
-:root{
-  --surface:#ffffff;
-  --surface-soft:#f7faf8;
-  --surface-green:#f1f7f4;
-  --line:#e5ebe7;
-  --shadow-soft:0 10px 30px rgba(15,45,33,.055);
-  --shadow-hover:0 15px 38px rgba(15,45,33,.085);
-}
-
-body{
-  background:
-    linear-gradient(180deg,#ffffff 0,#fbfcfb 46%,#f7faf8 100%);
-}
-
-.header{
-  position:sticky;
-  top:0;
-  z-index:20;
-  min-height:72px;
-  border-bottom:1px solid #dfe8e3;
-  box-shadow:0 4px 18px rgba(16,50,36,.035);
-  backdrop-filter:blur(10px);
-}
-
-.header-title h2{
-  font-size:1.08rem;
-  letter-spacing:-.02em;
-}
-
-.header-title p{
-  letter-spacing:.01em;
-}
-
-.clock-box{
-  background:#fbfdfc;
-  box-shadow:none;
-  border-color:#dde7e1;
-}
-
-.main-container{
-  max-width:1380px;
-  padding-top:24px;
-}
-
-.card,
-.metric,
-.service-panel{
-  border-color:var(--line);
-  box-shadow:var(--shadow-soft);
-}
-
-.card{
-  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
-}
-
-.card:hover{
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-hover);
-  border-color:#d8e3dc;
-}
-
-.card-header{
-  padding:16px 18px 10px;
-}
-
-.card-title{
-  font-size:.82rem;
-  letter-spacing:.035em;
-}
-
-.card-subtitle{
-  font-size:.6rem;
-  line-height:1.45;
-}
-
-.photo-card,
-.lotacao-card,
-.chart-card{
-  min-height:370px;
-}
-
-.main-photo{
-  height:205px;
-}
-
-.thumb{
-  width:68px;
-  height:44px;
-  cursor:pointer;
-  transition:transform .2s ease,border-color .2s ease,opacity .2s ease;
-}
-
-.thumb:hover{
-  transform:translateY(-2px);
-  border-color:var(--verde);
-}
-
-.lotacao-content{
-  grid-template-columns:185px 1fr;
-  gap:20px;
-  padding:10px 20px 8px;
-}
-
-.gauge-wrap{
-  width:178px;
-  height:178px;
-}
-
-.number{
-  font-size:2.9rem;
-}
-
-.status-badge{
-  box-shadow:0 6px 16px color-mix(in srgb,var(--status-color) 22%,transparent);
-}
-
-.capacity-bar{
-  height:10px;
-}
-
-.chart-box{
-  height:248px;
-  padding:8px 16px 10px;
-}
-
-.peak-info{
-  margin:2px 16px 6px;
-  padding:11px 13px;
-  border:1px solid #dfece5;
-}
-
-.metrics{
-  gap:12px;
-}
-
-.metric{
-  min-height:78px;
-  padding:15px 17px;
-  transition:transform .2s ease,box-shadow .2s ease;
-}
-
-.metric:hover{
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-hover);
-}
-
-.metric-icon{
-  background:var(--surface-green);
-  color:var(--verde);
-}
-
-.metric-label{
-  font-size:.66rem;
-}
-
-.metric-desc{
-  margin-top:2px;
-  line-height:1.35;
-}
-
-/* Painel de horários */
-.service-panel{
-  padding:20px;
-  background:#fff;
-}
-
-.service-heading{
-  padding-bottom:14px;
-  border-bottom:1px solid #edf1ef;
-  margin-bottom:16px;
-}
-
-.service-kicker{
-  font-size:.56rem;
-}
-
-.service-heading h3{
-  font-size:1.02rem;
-  letter-spacing:-.02em;
-}
-
-.service-now{
-  border:1px solid #dcebe3;
-  background:#f2f8f5;
-}
-
-.service-grid{
-  gap:14px;
-}
-
-.meal-service{
-  padding:18px;
-  border-color:#e2e9e5;
-  box-shadow:0 6px 18px rgba(12,46,31,.035);
-}
-
-.meal-top{
-  padding-bottom:13px;
-  border-bottom:1px solid #eef2f0;
-}
-
-.meal-icon{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-}
-
-.meal-name{
-  font-size:.76rem;
-}
-
-.meal-days{
-  margin-top:3px;
-  font-size:.56rem;
-}
-
-.meal-time-row{
-  margin-top:13px;
-  padding:11px 13px;
-  background:#f8faf9;
-  border:1px solid #edf1ef;
-}
-
-.meal-time-row strong{
-  font-size:1.08rem;
-}
-
-.wait-box{
-  margin-top:10px;
-  padding:12px 13px;
-  border:1px solid #e4ebe7;
-  background:#fcfdfc;
-}
-
-.wait-value{
-  font-size:1.08rem;
-}
-
-.bottom-grid{
-  gap:14px;
-  margin-top:14px;
-}
-
-.bottom-card{
-  padding:20px;
-}
-
-.section-title{
-  font-size:.82rem;
-  letter-spacing:.035em;
-}
-
-.summary-row{
-  padding:10px 2px;
-}
-
-.location-box{
-  gap:20px;
-}
-
-.map-placeholder{
-  min-height:145px;
-  background:
-    radial-gradient(circle at 25% 30%,rgba(0,81,55,.07),transparent 28%),
-    linear-gradient(145deg,#f1f6f3,#e8f0eb);
-  border:1px solid #dde8e1;
-}
-
-.map-button{
-  padding:8px 13px;
-  font-weight:600;
-  transition:transform .2s ease,opacity .2s ease;
-}
-
-.map-button:hover{
-  transform:translateY(-1px);
-  opacity:.92;
-}
-
-.footer{
-  margin-top:16px;
-  padding:11px 16px;
-  border-radius:10px;
-}
-
-/* melhor hierarquia em telas menores */
-@media(max-width:1050px){
-  .photo-card,.lotacao-card,.chart-card{min-height:auto}
-}
-
-@media(max-width:760px){
-  .main-container{padding-top:14px}
-  .lotacao-content{grid-template-columns:160px 1fr}
-  .gauge-wrap{width:155px;height:155px}
-}
-
-@media(max-width:500px){
-  .header{position:static}
-  .card-header{padding:14px 15px 9px}
-  .service-panel{padding:15px}
-  .meal-service{padding:15px}
-}
-
-
-/* =========================================================
-   DESIGN PREMIUM — SOMENTE VISUAL
-   Não altera IDs, Firebase, nomes das fotos ou dados.
-========================================================= */
-
-:root{
-  --verde:#003f2d;
-  --verde-claro:#0b7a52;
-  --verde-vivo:#13946a;
-  --verde-pale:#edf7f2;
-  --verde-pale-2:#f6faf8;
-
-  --ambar:#d98a10;
-  --vermelho:#be3b32;
-
-  --bg:#f4f7f5;
-  --card:#ffffff;
-  --ink:#15231d;
-  --ink-soft:#64736c;
-  --border:#dfe7e2;
-
-  --shadow:0 10px 30px rgba(17,55,39,.065);
-  --shadow-lg:0 18px 45px rgba(17,55,39,.09);
-  --radius:18px;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  background:
-    radial-gradient(circle at 7% 3%,rgba(19,148,106,.055),transparent 25%),
-    radial-gradient(circle at 94% 7%,rgba(0,63,45,.035),transparent 24%),
-    #f6f8f7;
-  color:var(--ink);
-}
-
-/* HEADER MAIS INSTITUCIONAL */
-.header{
-  min-height:78px;
-  padding:12px clamp(16px,3vw,40px);
-  background:rgba(255,255,255,.96);
-  border-bottom:1px solid #dce6e0;
-  box-shadow:0 4px 22px rgba(18,55,40,.045);
-}
-
-.header-left{
-  gap:14px;
-}
-
-.logo-container img{
-  height:44px;
-}
-
-.header-title h2{
-  color:var(--verde);
-  font-size:1.12rem;
-  letter-spacing:-.025em;
-}
-
-.header-title p{
-  color:#718079;
-  font-size:.66rem;
-  letter-spacing:.015em;
-}
-
-.live-indicator{
-  padding:7px 10px;
-  background:#f4f8f6;
-  border:1px solid #e0e9e4;
-  border-radius:999px;
-}
-
-.live-indicator.online{
-  background:#edf8f2;
-  border-color:#d4eadd;
-}
-
-.clock-box{
-  min-width:205px;
-  padding:10px 14px;
-  background:#fff;
-  border:1px solid #dde7e1;
-  border-radius:12px;
-  box-shadow:none;
-}
-
-.clock-icon{
-  color:var(--verde);
-}
-
-.clock-time{
-  color:var(--verde);
-  font-size:1.3rem;
-}
-
-.clock-date{
-  color:#74827b;
-}
-
-/* CONTEÚDO */
-.main-container{
-  max-width:1400px;
-  padding:28px clamp(14px,2.2vw,28px) 32px;
-}
-
-/* O HERO INSERIDO NA VERSÃO ANTERIOR */
-.main-container > div:first-child{
-  padding:2px 2px 4px;
-  margin-bottom:18px !important;
-}
-
-.main-container > div:first-child h1{
-  color:var(--verde) !important;
-  font-size:1.42rem !important;
-  letter-spacing:-.035em !important;
-}
-
-.main-container > div:first-child p{
-  color:#718079 !important;
-}
-
-/* GRID PRINCIPAL */
-.top-grid{
-  grid-template-columns:.95fr 1.18fr 1.08fr;
-  gap:16px;
-  align-items:stretch;
-}
-
-.card{
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  background:#fff;
-}
-
-.card:hover{
-  transform:none;
-  box-shadow:var(--shadow-lg);
-  border-color:#d6e2db;
-}
-
-.card-header{
-  padding:18px 20px 10px;
-}
-
-.card-title{
-  color:var(--verde);
-  font-size:.8rem;
-  letter-spacing:.055em;
-}
-
-.card-subtitle{
-  margin-top:4px;
-  font-size:.59rem;
-  color:#78867f;
-}
-
-/* FOTO */
-.photo-card{
-  position:relative;
-  min-height:392px;
-}
-
-.main-photo{
-  height:222px;
-  object-fit:cover;
-  border-top:1px solid #edf1ef;
-  border-bottom:1px solid #edf1ef;
-}
-
-.location{
-  padding:12px 18px 5px;
-  line-height:1.45;
-}
-
-.location strong{
-  margin-bottom:2px;
-  font-size:.7rem;
-}
-
-.thumbnails{
-  padding:8px 14px 14px;
-  gap:7px;
-}
-
-.thumb{
-  width:66px;
-  height:44px;
-  border-radius:9px;
-  opacity:.86;
-}
-
-.thumb:first-child{
-  border:2px solid var(--verde);
-  opacity:1;
-}
-
-/* =========================================================
-   MONITORAMENTO — DESTAQUE PRINCIPAL
-========================================================= */
-.lotacao-card{
-  min-height:392px;
-  padding-bottom:17px;
-  position:relative;
-  border-color:#cfddd5;
-  overflow:hidden;
-}
-
-.lotacao-card::before{
-  content:"";
-  position:absolute;
-  inset:0 0 auto 0;
-  height:5px;
-  background:var(--verde);
-}
-
-.lotacao-card::after{
-  content:"";
-  position:absolute;
-  width:240px;
-  height:240px;
-  right:-130px;
-  top:-110px;
-  border-radius:50%;
-  background:rgba(11,122,82,.045);
-  pointer-events:none;
-}
-
-.lotacao-card .card-header{
-  padding-top:21px;
-}
-
-.lotacao-card .card-title{
-  font-size:.86rem;
-  letter-spacing:.07em;
-}
-
-.lotacao-content{
-  grid-template-columns:195px 1fr;
-  gap:24px;
-  padding:10px 22px 8px;
-}
-
-.gauge-wrap{
-  width:188px;
-  height:188px;
-  filter:drop-shadow(0 7px 12px rgba(18,73,50,.05));
-}
-
-.gauge-track{
-  stroke:#e8eeea;
-  stroke-width:12;
-}
-
-.gauge-fill{
-  stroke-width:12;
-}
-
-.eyebrow{
-  color:#78877f;
-  font-size:.56rem;
-  letter-spacing:.13em;
-}
-
-.number{
-  color:var(--verde);
-  font-size:3.18rem;
-  letter-spacing:-.06em;
-}
-
-.label-pessoas{
-  color:#6f7d76;
-}
-
-.pct-label{
-  margin-top:3px;
-  font-size:.61rem;
-}
-
-.status-area{
-  gap:13px;
-}
-
-.status-label{
-  letter-spacing:.08em;
-  font-size:.54rem;
-}
-
-.status-badge{
-  padding:9px 17px;
-  font-size:.7rem;
-  letter-spacing:.01em;
-  box-shadow:none;
-}
-
-.status-description{
-  max-width:220px;
-  padding:10px 12px;
-  border-left:3px solid var(--status-color);
-  background:#f8faf9;
-  border-radius:0 9px 9px 0;
-  line-height:1.5;
-}
-
-.capacity-title{
-  font-size:.57rem;
-  letter-spacing:.04em;
-}
-
-.capacity-title strong{
-  color:var(--verde);
-  font-size:.78rem;
-}
-
-.capacity-bar{
-  height:8px;
-  background:#e8eeea;
-}
-
-.capacity-small{
-  margin-top:6px;
-}
-
-.updated-at{
-  color:#87938d;
-  text-align:center;
-  padding-top:4px;
-}
-
-/* GRÁFICO */
-.chart-card{
-  min-height:392px;
-}
-
-.chart-box{
-  height:248px;
-  padding:8px 17px 12px;
-}
-
-.peak-info{
-  margin:0 16px 8px;
-  padding:11px 13px;
-  background:var(--verde-pale-2);
-  border:1px solid #e0eae4;
-  border-radius:11px;
-}
-
-.peak-info strong{
-  color:var(--verde);
-}
-
-/* MÉTRICAS */
-.metrics{
-  margin-top:16px;
-  gap:12px;
-}
-
-.metrics-compact{
-  grid-template-columns:repeat(2,minmax(0,1fr));
-}
-
-.metric{
-  min-height:84px;
-  padding:15px 18px;
-  border-radius:14px;
-  background:#fff;
-  border:1px solid var(--border);
-  box-shadow:0 7px 22px rgba(18,55,40,.045);
-}
-
-.metric:hover{
-  transform:none;
-  box-shadow:0 10px 28px rgba(18,55,40,.065);
-}
-
-.metric-icon{
-  width:42px;
-  height:42px;
-  min-width:42px;
-  background:var(--verde-pale);
-  color:var(--verde);
-}
-
-.metric-value{
-  color:var(--verde);
-  font-size:1.32rem;
-}
-
-.metric-label{
-  color:#26372f;
-  font-size:.64rem;
-}
-
-.metric-desc{
-  color:#7a8781;
-}
-
-/* =========================================================
-   HORÁRIOS E TEMPO DE ESPERA
-========================================================= */
-.service-panel{
-  margin-top:16px;
-  padding:21px;
-  border-radius:18px;
-  border:1px solid #d9e5de;
-  background:#fff;
-  box-shadow:var(--shadow);
-}
-
-.service-heading{
-  margin-bottom:17px;
-  padding-bottom:15px;
-  border-bottom:1px solid #e9efeb;
-}
-
-.service-kicker{
-  color:var(--verde-claro);
-  font-size:.55rem;
-  letter-spacing:.13em;
-}
-
-.service-heading h3{
-  margin-top:4px;
-  color:var(--verde);
-  font-size:1.02rem;
-  letter-spacing:-.022em;
-}
-
-.service-now{
-  background:var(--verde-pale);
-  border:1px solid #d4e8dd;
-  color:var(--verde);
-  padding:8px 12px;
-}
-
-.service-grid{
-  gap:14px;
-}
-
-.meal-service{
-  padding:18px;
-  border:1px solid #dfe8e3;
-  border-radius:14px;
-  background:#fbfdfc;
-  box-shadow:none;
-}
-
-.meal-top{
-  padding-bottom:13px;
-  border-bottom:1px solid #e9efeb;
-}
-
-.meal-icon{
-  width:43px;
-  height:43px;
-  border-radius:12px;
-  background:#eaf6f0;
-  color:var(--verde);
-}
-
-.dinner-service .meal-icon{
-  background:#f1f2f3;
-  color:#4d5e56;
-}
-
-.meal-name{
-  color:var(--verde);
-  font-size:.74rem;
-  letter-spacing:.075em;
-}
-
-.meal-days{
-  font-size:.55rem;
-}
-
-.meal-status{
-  border:1px solid #e2e8e5;
-}
-
-.meal-status.open{
-  border-color:#cce5d7;
-  background:#eaf7ef;
-}
-
-.meal-time-row{
-  margin-top:13px;
-  background:#fff;
-  border:1px solid #e5ebe7;
-  border-radius:10px;
-}
-
-.meal-time-row strong{
-  color:var(--verde);
-  font-size:1.1rem;
-}
-
-.wait-box{
-  background:#fff;
-  border:1px solid #e3eae6;
-  border-radius:10px;
-}
-
-.wait-value{
-  color:var(--verde-claro);
-  font-size:1.12rem;
-}
-
-/* PARTE INFERIOR */
-.bottom-grid{
-  margin-top:16px;
-  gap:14px;
-  grid-template-columns:1fr 1.3fr;
-}
-
-.bottom-card{
-  padding:21px;
-  border-radius:16px;
-}
-
-.section-title{
-  color:var(--verde);
-  font-size:.78rem;
-  letter-spacing:.065em;
-}
-
-.summary-row{
-  padding:11px 2px;
-  font-size:.63rem;
-}
-
-.summary-row strong{
-  color:#26372f;
-}
-
-.location-info strong{
-  color:var(--verde);
-  font-size:.74rem;
-}
-
-.map-placeholder{
-  min-height:150px;
-  border:1px solid #dbe7e0;
-  border-radius:12px;
-  color:var(--verde);
-  background:
-    linear-gradient(rgba(246,250,248,.88),rgba(246,250,248,.88)),
-    repeating-linear-gradient(45deg,#dfe9e3 0 1px,transparent 1px 16px);
-}
-
-.map-button{
-  margin-top:12px;
-  padding:9px 14px;
-  border-radius:9px;
-  background:var(--verde);
-  font-weight:600;
-}
-
-/* RODAPÉ */
-.footer{
-  margin-top:18px;
-  padding:12px 16px;
-  background:#003b2b;
-  border-radius:11px;
-  color:rgba(255,255,255,.88);
-}
-
-/* RESPONSIVIDADE */
-@media(max-width:1120px){
-  .top-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .chart-card{
-    grid-column:1 / -1;
-  }
-
-  .chart-box{
-    height:270px;
-  }
-}
-
-@media(max-width:780px){
-  .header{
-    position:static;
-  }
-
-  .top-grid,
-  .bottom-grid{
-    grid-template-columns:1fr;
-  }
-
-  .chart-card{
-    grid-column:auto;
-  }
-
-  .metrics-compact{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .lotacao-content{
-    grid-template-columns:170px 1fr;
-    gap:16px;
-  }
-
-  .gauge-wrap{
-    width:165px;
-    height:165px;
-  }
-}
-
-@media(max-width:540px){
-  body{
-    background:#f7f9f8;
-  }
-
-  .main-container{
-    padding:14px 10px 22px;
-  }
-
-  .card,
-  .service-panel{
-    border-radius:14px;
-  }
-
-  .metrics-compact{
-    grid-template-columns:1fr;
-  }
-
-  .lotacao-content{
-    grid-template-columns:1fr;
-    padding:10px 16px 6px;
-  }
-
-  .gauge-wrap{
-    width:180px;
-    height:180px;
-  }
-
-  .status-area{
-    align-items:stretch;
-  }
-
-  .status-badge{
-    width:100%;
-    justify-content:center;
-  }
-
-  .status-description{
-    max-width:none;
-  }
-
-  .service-heading{
-    align-items:flex-start;
-    flex-direction:column;
-  }
-
-  .service-grid{
-    grid-template-columns:1fr;
-  }
-}
-
-
-/* =========================================================
-   AJUSTE DE COERÊNCIA DAS INFORMAÇÕES
-========================================================= */
-
-.monitor-detail{
-  margin-top:2px;
-}
-
-.smart-metric{
-  position:relative;
-  overflow:hidden;
-}
-
-.smart-metric::after{
-  content:"";
-  position:absolute;
-  right:-24px;
-  bottom:-28px;
-  width:78px;
-  height:78px;
-  border-radius:50%;
-  background:rgba(11,122,82,.035);
-  pointer-events:none;
-}
-
-.smart-metric .metric-value{
-  min-width:56px;
-}
-
-#metricAvailable{
-  color:var(--verde);
-}
-
-#metricNextLevel{
-  color:var(--verde-claro);
-}
-
-#metricNextLevelLabel{
-  color:#26372f;
-}
-
-.capacity-small{
-  line-height:1.4;
-}
-
-/* Deixa o painel principal ainda mais legível sem adicionar informação nova */
-.status-area > div:first-child{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:5px;
-}
-
-@media(max-width:540px){
-  .smart-metric{
-    min-height:80px;
-  }
-}
-
 </style>
 </head>
 
@@ -1763,29 +648,35 @@ body{
 </header>
 
 <main class="main-container">
-  <div style="margin:0 0 16px;display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;">
-    <div>
-      <div style="font-size:.58rem;font-weight:700;letter-spacing:.10em;color:#0b8457;">PAINEL DE MONITORAMENTO</div>
-      <h1 style="margin:3px 0 0;font-size:1.28rem;color:#17251f;letter-spacing:-.03em;">Restaurante Universitário</h1>
-      <p style="margin:3px 0 0;font-size:.66rem;color:#63736b;">Lotação, movimento, horários de atendimento e espera estimada em um único painel.</p>
-    </div>
-  </div>
 
   <section class="top-grid">
 
-    <!-- FOTO -->
+    <!-- FOTO / CARROSSEL -->
     <div class="card photo-card">
       <div class="card-header">
         <div class="card-title">▣ &nbsp; CONHEÇA O RU</div>
         <div class="card-subtitle">Espaços do Restaurante Universitário</div>
       </div>
 
-      <img class="main-photo" src="ru-foto-1.jpg"
-           alt="Restaurante Universitário"
-           onerror="this.style.display='none';document.getElementById('photoPlaceholder').style.display='flex';">
+      <div class="carousel-container" id="ruCarousel">
+        <img class="carousel-slide active" src="ru-foto-1.jpg" alt="Restaurante Universitário - foto 1">
+        <img class="carousel-slide" src="ru-foto-2.jpg" alt="Restaurante Universitário - foto 2">
+        <img class="carousel-slide" src="ru-foto-3.jpg" alt="Restaurante Universitário - foto 3">
+        <img class="carousel-slide" src="ru-foto-4.jpg" alt="Restaurante Universitário - foto 4">
+
+        <button class="carousel-btn prev" id="prevPhoto" type="button" aria-label="Foto anterior">‹</button>
+        <button class="carousel-btn next" id="nextPhoto" type="button" aria-label="Próxima foto">›</button>
+
+        <div class="carousel-dots" id="carouselDots" aria-label="Selecionar foto">
+          <button class="carousel-dot active" type="button" data-index="0" aria-label="Foto 1"></button>
+          <button class="carousel-dot" type="button" data-index="1" aria-label="Foto 2"></button>
+          <button class="carousel-dot" type="button" data-index="2" aria-label="Foto 3"></button>
+          <button class="carousel-dot" type="button" data-index="3" aria-label="Foto 4"></button>
+        </div>
+      </div>
 
       <div class="photo-placeholder" id="photoPlaceholder" style="display:none">
-        Adicione a foto do RU
+        Adicione as fotos do RU
       </div>
 
       <div class="location">
@@ -1793,11 +684,11 @@ body{
         Campus Santo André — UFABC
       </div>
 
-      <div class="thumbnails">
-        <img class="thumb" src="ru-foto-1.jpg" alt="">
-        <img class="thumb" src="ru-foto-2.jpg" alt="">
-        <img class="thumb" src="ru-foto-3.jpg" alt="">
-        <img class="thumb" src="ru-foto-4.jpg" alt="">
+      <div class="thumbnails" id="photoThumbnails">
+        <img class="thumb active" src="ru-foto-1.jpg" alt="Miniatura foto 1" data-index="0">
+        <img class="thumb" src="ru-foto-2.jpg" alt="Miniatura foto 2" data-index="1">
+        <img class="thumb" src="ru-foto-3.jpg" alt="Miniatura foto 3" data-index="2">
+        <img class="thumb" src="ru-foto-4.jpg" alt="Miniatura foto 4" data-index="3">
       </div>
     </div>
 
@@ -1835,10 +726,10 @@ body{
             Aguardando informações do sistema.
           </div>
 
-          <div class="monitor-detail">
+          <div>
             <div class="capacity-title">
-              <span>OCUPAÇÃO DO ESPAÇO</span>
-              <strong><span id="capacityNumber">--</span> / 50</strong>
+              <span>OCUPAÇÃO</span>
+              <strong id="ocupacaoDisplay">--%</strong>
             </div>
 
             <div class="capacity-bar">
@@ -1846,7 +737,7 @@ body{
             </div>
 
             <div class="capacity-small">
-              Capacidade de referência do sistema: 50 pessoas
+              <span id="capacityNumber">--</span> de 50 pessoas
             </div>
           </div>
         </div>
@@ -1880,90 +771,46 @@ body{
   </section>
 
   <!-- INDICADORES -->
-  <section class="metrics metrics-compact">
+  <section class="metrics">
 
-    <div class="metric smart-metric">
-      <div class="metric-icon">○</div>
+    <!-- HORÁRIO DE FUNCIONAMENTO -->
+    <div class="metric">
+      <div class="metric-icon">🕐</div>
       <div>
-        <div class="metric-value" id="metricAvailable">--</div>
-        <div class="metric-label">Vagas disponíveis</div>
-        <div class="metric-desc">Com base na referência de 50 pessoas</div>
+        <div class="metric-value metric-hours">11h–14h</div>
+        <div class="metric-label">Horário de funcionamento</div>
+        <div class="metric-desc">Almoço: seg. a sáb. • Jantar: 17h30–20h, seg. a sex.</div>
       </div>
     </div>
 
-    <div class="metric smart-metric">
-      <div class="metric-icon">↗</div>
+    <!-- TEMPO MÉDIO DE ESPERA -->
+    <div class="metric">
+      <div class="metric-icon">⏱</div>
       <div>
-        <div class="metric-value" id="metricNextLevel">--</div>
-        <div class="metric-label" id="metricNextLevelLabel">Próxima mudança de status</div>
-        <div class="metric-desc" id="metricNextLevelDesc">Calculado pela lotação atual</div>
+        <div class="metric-value">Em breve</div>
+        <div class="metric-label">Tempo médio de espera</div>
+        <div class="metric-desc">Estimativa para almoço e jantar</div>
       </div>
     </div>
 
-  </section>
-
-  <!-- HORÁRIOS E FILA -->
-  <section class="service-panel">
-
-    <div class="service-heading">
+    <div class="metric">
+      <div class="metric-icon">◉</div>
       <div>
-        <div class="service-kicker">ATENDIMENTO DO RU</div>
-        <h3>Horários e tempo estimado de espera</h3>
+        <div class="metric-value" id="metricCapacity">--%</div>
+        <div class="metric-label">Da capacidade</div>
+        <div class="metric-desc">Ocupação atual do RU</div>
       </div>
-      <div class="service-now" id="serviceNow">Verificando horário...</div>
     </div>
 
-    <div class="service-grid">
-
-      <article class="meal-service lunch-service">
-        <div class="meal-top">
-          <div class="meal-icon">☀</div>
-          <div>
-            <div class="meal-name">ALMOÇO</div>
-            <div class="meal-days">Segunda a sábado</div>
-          </div>
-          <span class="meal-status" id="lunchStatus">Fechado</span>
-        </div>
-
-        <div class="meal-time-row">
-          <span>Horário</span>
-          <strong>11h — 14h</strong>
-        </div>
-
-        <div class="wait-box">
-          <div>
-            <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
-            <strong class="wait-value" id="waitLunch">-- min</strong>
-          </div>
-          <small id="waitLunchNote">Aguardando estimativa do sistema</small>
-        </div>
-      </article>
-
-      <article class="meal-service dinner-service">
-        <div class="meal-top">
-          <div class="meal-icon">☾</div>
-          <div>
-            <div class="meal-name">JANTAR</div>
-            <div class="meal-days">Segunda a sexta-feira</div>
-          </div>
-          <span class="meal-status" id="dinnerStatus">Fechado</span>
-        </div>
-
-        <div class="meal-time-row">
-          <span>Horário</span>
-          <strong>17h30 — 20h</strong>
-        </div>
-
-        <div class="wait-box">
-          <div>
-            <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
-            <strong class="wait-value" id="waitDinner">-- min</strong>
-          </div>
-          <small id="waitDinnerNote">Aguardando estimativa do sistema</small>
-        </div>
-      </article>
-
+    <div class="metric">
+      <div class="metric-icon">◷</div>
+      <div>
+        <div class="metric-value" id="metricPeakHour">--</div>
+        <div class="metric-label">Horário de pico</div>
+        <div class="metric-desc">Maior movimento do dia</div>
+      </div>
     </div>
+
   </section>
 
   <!-- RESUMO / LOCAL -->
@@ -2080,108 +927,6 @@ function atualizarRelogio(){
 atualizarRelogio();
 setInterval(atualizarRelogio,1000);
 
-/* HORÁRIO ATUAL DO SERVIÇO */
-function atualizarStatusServico(){
-
-  const agora = new Date();
-  const dia = agora.getDay();
-  const minutos = agora.getHours()*60 + agora.getMinutes();
-
-  const almocoDisponivel = dia >= 1 && dia <= 6;
-  const jantarDisponivel = dia >= 1 && dia <= 5;
-
-  const almocoAberto =
-    almocoDisponivel &&
-    minutos >= 11*60 &&
-    minutos < 14*60;
-
-  const jantarAberto =
-    jantarDisponivel &&
-    minutos >= 17*60+30 &&
-    minutos < 20*60;
-
-  const lunchStatus = document.getElementById("lunchStatus");
-  const dinnerStatus = document.getElementById("dinnerStatus");
-  const serviceNow = document.getElementById("serviceNow");
-
-  lunchStatus.classList.toggle("open",almocoAberto);
-  dinnerStatus.classList.toggle("open",jantarAberto);
-
-  lunchStatus.textContent = almocoAberto ? "ABERTO AGORA" : "FECHADO";
-  dinnerStatus.textContent = jantarAberto ? "ABERTO AGORA" : "FECHADO";
-
-  if(almocoAberto){
-
-    serviceNow.textContent =
-      "Almoço • atendimento até 14h";
-
-  }else if(jantarAberto){
-
-    serviceNow.textContent =
-      "Jantar • atendimento até 20h";
-
-  }else if(dia >= 1 && dia <= 5 && minutos < 11*60){
-
-    serviceNow.textContent =
-      "Próximo serviço: almoço às 11h";
-
-  }else if(dia >= 1 && dia <= 5 && minutos >= 14*60 && minutos < 17*60+30){
-
-    serviceNow.textContent =
-      "Próximo serviço: jantar às 17h30";
-
-  }else if(dia === 6 && minutos < 11*60){
-
-    serviceNow.textContent =
-      "Próximo serviço: almoço às 11h";
-
-  }else if(dia === 0 || dia === 6){
-
-    serviceNow.textContent =
-      "Próximo atendimento: segunda-feira às 11h";
-
-  }else{
-
-    serviceNow.textContent =
-      "Próximo atendimento: amanhã às 11h";
-
-  }
-}
-
-atualizarStatusServico();
-setInterval(atualizarStatusServico,60000);
-
-/* TEMPO ESTIMADO DE ESPERA
-   Estes caminhos podem ser preenchidos futuramente pelo ESP32/Firebase.
-   Enquanto não houver dado, o painel mostra "-- min". */
-onValue(ref(db,"RU/tempoEspera/almoco"),snapshot=>{
-  const valor = snapshot.val();
-  const el = document.getElementById("waitLunch");
-  const nota = document.getElementById("waitLunchNote");
-
-  if(valor !== null && !isNaN(Number(valor))){
-    el.textContent = `${Number(valor)} min`;
-    nota.textContent = "Estimativa atual do sistema";
-  }else{
-    el.textContent = "-- min";
-    nota.textContent = "Aguardando estimativa do sistema";
-  }
-});
-
-onValue(ref(db,"RU/tempoEspera/jantar"),snapshot=>{
-  const valor = snapshot.val();
-  const el = document.getElementById("waitDinner");
-  const nota = document.getElementById("waitDinnerNote");
-
-  if(valor !== null && !isNaN(Number(valor))){
-    el.textContent = `${Number(valor)} min`;
-    nota.textContent = "Estimativa atual do sistema";
-  }else{
-    el.textContent = "-- min";
-    nota.textContent = "Aguardando estimativa do sistema";
-  }
-});
-
 /* ANIMAÇÃO DO NÚMERO */
 function animarNumero(el,de,para,duracao=500){
 
@@ -2297,7 +1042,9 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
     .textContent =
     `${porcentagem}% da capacidade`;
 
-  
+  document.getElementById("ocupacaoDisplay")
+    .textContent =
+    `${porcentagem}%`;
 
   document.getElementById("metricCapacity")
     .textContent =
@@ -2306,74 +1053,6 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
   document.getElementById("capacityNumber")
     .textContent =
     valor;
-
-  /* INFORMAÇÕES DERIVADAS — sem criar novos dados no Firebase */
-  const vagasDisponiveis =
-    Math.max(CAPACIDADE - valor, 0);
-
-  const metricAvailable =
-    document.getElementById("metricAvailable");
-
-  if(metricAvailable){
-    metricAvailable.textContent =
-      vagasDisponiveis;
-  }
-
-  const metricNextLevel =
-    document.getElementById("metricNextLevel");
-
-  const metricNextLevelLabel =
-    document.getElementById("metricNextLevelLabel");
-
-  const metricNextLevelDesc =
-    document.getElementById("metricNextLevelDesc");
-
-  if(metricNextLevel && metricNextLevelLabel && metricNextLevelDesc){
-
-    if(valor < LIMITE_MODERADO){
-
-      const faltam =
-        LIMITE_MODERADO - valor;
-
-      metricNextLevel.textContent =
-        `+${faltam}`;
-
-      metricNextLevelLabel.textContent =
-        "Até ficar Moderado";
-
-      metricNextLevelDesc.textContent =
-        "Pessoas até a próxima mudança de status";
-
-    }else if(valor < LIMITE_LOTADO){
-
-      const faltam =
-        LIMITE_LOTADO - valor;
-
-      metricNextLevel.textContent =
-        `+${faltam}`;
-
-      metricNextLevelLabel.textContent =
-        "Até ficar Lotado";
-
-      metricNextLevelDesc.textContent =
-        "Pessoas até atingir a capacidade de referência";
-
-    }else{
-
-      metricNextLevel.textContent =
-        "Atingido";
-
-      metricNextLevelLabel.textContent =
-        "Capacidade de referência";
-
-      metricNextLevelDesc.textContent =
-        valor > CAPACIDADE
-          ? `${valor - CAPACIDADE} pessoa(s) acima da referência`
-          : "Limite de referência alcançado";
-
-    }
-
-  }
 
   document.getElementById("capacityFill")
     .style.width =
@@ -2436,8 +1115,9 @@ onValue(ref(db,"RU/totalEntrada"),snapshot=>{
   const valor =
     total !== null ? total : "--";
 
-  const totalEntradaEl = document.getElementById("totalEntradaDisplay");
-  if(totalEntradaEl) totalEntradaEl.textContent = valor;
+  document.getElementById(
+    "totalEntradaDisplay"
+  ).textContent = valor;
 
   document.getElementById(
     "summaryEntries"
@@ -2452,8 +1132,9 @@ onValue(ref(db,"RU/picoDia"),snapshot=>{
   const valor =
     pico !== null ? pico : "--";
 
-  const picoDiaEl = document.getElementById("picoDiaDisplay");
-  if(picoDiaEl) picoDiaEl.textContent = valor;
+  document.getElementById(
+    "picoDiaDisplay"
+  ).textContent = valor;
 
   document.getElementById(
     "summaryPeak"
@@ -2512,7 +1193,10 @@ onValue(
     ).textContent =
     maxValor;
 
-    
+    document.getElementById(
+      "metricPeakHour"
+    ).textContent =
+    `${horaPico}h`;
 
     document.getElementById(
       "summaryPeakHour"
@@ -2577,6 +1261,75 @@ onValue(
 
   }
 );
+
+
+
+/* CARROSSEL DE FOTOS DO RU */
+const carousel = document.getElementById("ruCarousel");
+const slides = document.querySelectorAll(".carousel-slide");
+const dots = document.querySelectorAll(".carousel-dot");
+const thumbs = document.querySelectorAll("#photoThumbnails .thumb");
+const prevPhoto = document.getElementById("prevPhoto");
+const nextPhoto = document.getElementById("nextPhoto");
+
+let fotoAtual = 0;
+let intervaloFotos = null;
+
+function mostrarFoto(index){
+  if(!slides.length) return;
+
+  fotoAtual = (index + slides.length) % slides.length;
+
+  slides.forEach((slide, i) => {
+    slide.classList.toggle("active", i === fotoAtual);
+  });
+
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === fotoAtual);
+  });
+
+  thumbs.forEach((thumb, i) => {
+    thumb.classList.toggle("active", i === fotoAtual);
+  });
+}
+
+function iniciarCarrossel(){
+  clearInterval(intervaloFotos);
+  intervaloFotos = setInterval(() => {
+    mostrarFoto(fotoAtual + 1);
+  }, 5000);
+}
+
+prevPhoto.addEventListener("click", () => {
+  mostrarFoto(fotoAtual - 1);
+  iniciarCarrossel();
+});
+
+nextPhoto.addEventListener("click", () => {
+  mostrarFoto(fotoAtual + 1);
+  iniciarCarrossel();
+});
+
+dots.forEach(dot => {
+  dot.addEventListener("click", () => {
+    mostrarFoto(Number(dot.dataset.index));
+    iniciarCarrossel();
+  });
+});
+
+thumbs.forEach(thumb => {
+  thumb.addEventListener("click", () => {
+    mostrarFoto(Number(thumb.dataset.index));
+    iniciarCarrossel();
+  });
+});
+
+/* Pausa enquanto o usuário estiver olhando/interagindo com as fotos. */
+carousel.addEventListener("mouseenter", () => clearInterval(intervaloFotos));
+carousel.addEventListener("mouseleave", iniciarCarrossel);
+
+mostrarFoto(0);
+iniciarCarrossel();
 
 </script>
 
