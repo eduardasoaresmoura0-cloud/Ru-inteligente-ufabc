@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
 <style>
 :root{
@@ -2358,10 +2358,6 @@ onValue(ref(db,"RU/lotacao"),snapshot=>{
 
   
 
-  document.getElementById("metricCapacity")
-    .textContent =
-    `${porcentagem}%`;
-
   document.getElementById("capacityNumber")
     .textContent =
     valor;
@@ -2503,6 +2499,22 @@ onValue(ref(db,"RU/totalEntrada"),snapshot=>{
   ).textContent = valor;
 });
 
+
+/* PRIMEIRA ENTRADA */
+onValue(ref(db,"RU/primeiraEntrada"),snapshot=>{
+
+  const primeiraEntrada = snapshot.val();
+  const firstEntryEl = document.getElementById("firstEntry");
+
+  if(firstEntryEl){
+    firstEntryEl.textContent =
+      primeiraEntrada !== null && String(primeiraEntrada).trim() !== ""
+        ? String(primeiraEntrada)
+        : "--";
+  }
+
+});
+
 /* PICO */
 onValue(ref(db,"RU/picoDia"),snapshot=>{
 
@@ -2577,6 +2589,13 @@ onValue(
       "summaryPeakHour"
     ).textContent =
     `${horaPico}h`;
+
+    if(typeof Chart === "undefined"){
+      canvas.style.display = "none";
+      vazio.style.display = "block";
+      vazio.textContent = "Não foi possível carregar o gráfico. Atualize a página.";
+      return;
+    }
 
     if(chartInstance)
       chartInstance.destroy();
