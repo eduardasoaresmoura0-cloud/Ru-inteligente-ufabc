@@ -576,6 +576,48 @@ body{
   line-height:1.3;
 }
 
+
+.general-wait{
+  margin-top:14px;
+  padding:16px 18px;
+  border:1px solid #d9e7df;
+  border-radius:14px;
+  background:linear-gradient(135deg,#f8fcfa 0%,#eef8f3 100%);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.general-wait-value{
+  display:block;
+  margin-top:5px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.55rem;
+  line-height:1;
+  color:var(--verde);
+}
+
+.general-wait small{
+  max-width:330px;
+  text-align:right;
+  color:var(--ink-soft);
+  font-size:.55rem;
+  line-height:1.45;
+}
+
+@media(max-width:540px){
+  .general-wait{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .general-wait small{
+    max-width:none;
+    text-align:left;
+  }
+}
+
 /* PARTE INFERIOR */
 .bottom-grid{
   display:grid;
@@ -1922,8 +1964,8 @@ body{
     <!-- GRAFICO -->
     <div class="card chart-card">
       <div class="card-header">
-        <div class="card-title">▥ &nbsp; MOVIMENTO AO LONGO DO DIA</div>
-        <div class="card-subtitle">Média de pessoas por horário registrada pelo sistema</div>
+        <div class="card-title">▥ &nbsp; LOTAÇÃO AO LONGO DO DIA</div>
+        <div class="card-subtitle">Ocupação registrada a cada entrada e saída</div>
       </div>
 
       <div class="chart-box">
@@ -1934,9 +1976,9 @@ body{
       </div>
 
       <div class="peak-info">
-        <strong>Horário de maior movimento:</strong>
+        <strong>Maior ocupação registrada:</strong>
         <span id="peakHourDisplay">--</span><br>
-        <span>Média de <strong id="peakValueDisplay">--</strong> pessoas</span>
+        <span>Pico de <strong id="peakValueDisplay">--</strong> pessoas</span>
       </div>
     </div>
 
@@ -1971,7 +2013,7 @@ body{
     <div class="service-heading">
       <div>
         <div class="service-kicker">ATENDIMENTO DO RU</div>
-        <h3>Horários e tempo estimado de espera</h3>
+        <h3>Horários de atendimento</h3>
       </div>
       <div class="service-now" id="serviceNow">Verificando horário...</div>
     </div>
@@ -1992,14 +2034,6 @@ body{
           <span>Horário</span>
           <strong>11h — 14h</strong>
         </div>
-
-        <div class="wait-box">
-          <div>
-            <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
-            <strong class="wait-value" id="waitLunch">-- min</strong>
-          </div>
-          <small id="waitLunchNote">Aguardando estimativa do sistema</small>
-        </div>
       </article>
 
       <article class="meal-service dinner-service">
@@ -2016,17 +2050,21 @@ body{
           <span>Horário</span>
           <strong>17h30 — 20h</strong>
         </div>
-
-        <div class="wait-box">
-          <div>
-            <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
-            <strong class="wait-value" id="waitDinner">-- min</strong>
-          </div>
-          <small id="waitDinnerNote">Aguardando estimativa do sistema</small>
-        </div>
       </article>
 
     </div>
+
+    <div class="general-wait">
+      <div>
+        <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
+        <strong class="general-wait-value" id="waitGeneral">--</strong>
+      </div>
+
+      <small id="waitGeneralNote">
+        Aguardando estimativa do sistema
+      </small>
+    </div>
+
   </section>
 
   <!-- RESUMO / LOCAL -->
@@ -2211,34 +2249,58 @@ atualizarStatusServico();
 setInterval(atualizarStatusServico,60000);
 
 /* TEMPO ESTIMADO DE ESPERA
-   Estes caminhos podem ser preenchidos futuramente pelo ESP32/Firebase.
-   Enquanto não houver dado, o painel mostra "-- min". */
-onValue(ref(db,"RU/tempoEspera/almoco"),snapshot=>{
+   -1 = calculando
+    0 = sem espera
+   >0 = minutos estimados para liberação de vaga */
+onValue(ref(db,"RU/tempoEspera"),snapshot=>{
+
   const valor = snapshot.val();
-  const el = document.getElementById("waitLunch");
-  const nota = document.getElementById("waitLunchNote");
 
-  if(valor !== null && !isNaN(Number(valor))){
-    el.textContent = `${Number(valor)} min`;
-    nota.textContent = "Estimativa atual do sistema";
-  }else{
-    el.textContent = "-- min";
-    nota.textContent = "Aguardando estimativa do sistema";
+  const el =
+    document.getElementById("waitGeneral");
+
+  const nota =
+    document.getElementById("waitGeneralNote");
+
+  if(valor === null || isNaN(Number(valor))){
+
+    el.textContent = "--";
+
+    nota.textContent =
+      "Aguardando estimativa do sistema";
+
+    return;
   }
-});
 
-onValue(ref(db,"RU/tempoEspera/jantar"),snapshot=>{
-  const valor = snapshot.val();
-  const el = document.getElementById("waitDinner");
-  const nota = document.getElementById("waitDinnerNote");
+  const minutos =
+    Number(valor);
 
-  if(valor !== null && !isNaN(Number(valor))){
-    el.textContent = `${Number(valor)} min`;
-    nota.textContent = "Estimativa atual do sistema";
+  if(minutos < 0){
+
+    el.textContent =
+      "Calculando...";
+
+    nota.textContent =
+      "Aguardando saídas recentes para calcular a média de liberação de vagas";
+
+  }else if(minutos === 0){
+
+    el.textContent =
+      "Sem espera";
+
+    nota.textContent =
+      "Há disponibilidade de vagas no momento";
+
   }else{
-    el.textContent = "-- min";
-    nota.textContent = "Aguardando estimativa do sistema";
+
+    el.textContent =
+      `~ ${Math.round(minutos)} min`;
+
+    nota.textContent =
+      "Baseado na média recente de liberação de vagas";
+
   }
+
 });
 
 /* ANIMAÇÃO DO NÚMERO */
@@ -2532,12 +2594,15 @@ onValue(ref(db,"RU/picoDia"),snapshot=>{
   `${valor} pessoas`;
 });
 
-/* HISTÓRICO POR HORA */
+/* HISTÓRICO DE LOTAÇÃO
+   O ESP32 registra um ponto em cada entrada e saída:
+   RU/historicoLotacao/HHMMSS */
 onValue(
-  ref(db,"RU/historicoPorHora"),
+  ref(db,"RU/historicoLotacao"),
   snapshot=>{
 
-    const dados = snapshot.val();
+    const dados =
+      snapshot.val();
 
     const canvas =
       document.getElementById("peakChart");
@@ -2545,24 +2610,43 @@ onValue(
     const vazio =
       document.getElementById("emptyState");
 
-    if(
-      !dados ||
-      Object.keys(dados).length === 0
-    ){
+    if(!dados || Object.keys(dados).length === 0){
 
+      if(chartInstance){
+        chartInstance.destroy();
+        chartInstance = null;
+      }
+
+      canvas.style.display = "none";
+      vazio.style.display = "block";
+      vazio.textContent =
+        "Ainda não há dados suficientes para mostrar o histórico.";
+
+      document.getElementById("peakHourDisplay").textContent = "--";
+      document.getElementById("peakValueDisplay").textContent = "--";
+      document.getElementById("summaryPeakHour").textContent = "--";
+
+      return;
+    }
+
+    const chaves =
+      Object.keys(dados)
+        .filter(chave=>/^\d{6}$/.test(chave))
+        .sort();
+
+    if(chaves.length === 0){
       canvas.style.display = "none";
       vazio.style.display = "block";
       return;
     }
 
-    canvas.style.display = "block";
-    vazio.style.display = "none";
-
-    const horas =
-      Object.keys(dados).sort();
-
     const valores =
-      horas.map(h=>Number(dados[h]));
+      chaves.map(chave=>Number(dados[chave]));
+
+    const labels =
+      chaves.map(chave=>
+        `${chave.slice(0,2)}:${chave.slice(2,4)}`
+      );
 
     const maxValor =
       Math.max(...valores);
@@ -2571,80 +2655,117 @@ onValue(
       valores.indexOf(maxValor);
 
     const horaPico =
-      horas[indicePico];
+      labels[indicePico];
 
     document.getElementById(
       "peakHourDisplay"
-    ).textContent =
-    `${horaPico}h`;
+    ).textContent = horaPico;
 
     document.getElementById(
       "peakValueDisplay"
-    ).textContent =
-    maxValor;
-
-    
+    ).textContent = maxValor;
 
     document.getElementById(
       "summaryPeakHour"
-    ).textContent =
-    `${horaPico}h`;
+    ).textContent = horaPico;
+
+    canvas.style.display = "block";
+    vazio.style.display = "none";
 
     if(typeof Chart === "undefined"){
       canvas.style.display = "none";
       vazio.style.display = "block";
-      vazio.textContent = "Não foi possível carregar o gráfico. Atualize a página.";
+      vazio.textContent =
+        "Não foi possível carregar o gráfico. Atualize a página.";
       return;
     }
 
-    if(chartInstance)
+    if(chartInstance){
       chartInstance.destroy();
+    }
 
     chartInstance = new Chart(canvas,{
 
-      type:"bar",
+      type:"line",
 
       data:{
-        labels:
-          horas.map(h=>`${h}h`),
+        labels:labels,
 
         datasets:[{
-
           data:valores,
 
-          backgroundColor:
-            valores.map(v=>
-              v === maxValor
-                ? "#c0392b"
-                : "#005137"
-            ),
+          stepped:true,
 
-          borderRadius:5,
-          maxBarThickness:24
+          borderColor:"#006b4f",
+          backgroundColor:"rgba(25,169,116,.12)",
+
+          fill:true,
+          borderWidth:3,
+
+          pointRadius:2.5,
+          pointHoverRadius:5,
+
+          pointBackgroundColor:"#006b4f",
+          pointBorderColor:"#ffffff",
+          pointBorderWidth:1.5,
+
+          tension:0
         }]
       },
 
       options:{
-
         responsive:true,
         maintainAspectRatio:false,
+
+        interaction:{
+          intersect:false,
+          mode:"index"
+        },
 
         plugins:{
           legend:{
             display:false
+          },
+
+          tooltip:{
+            callbacks:{
+              label(context){
+                return `${context.parsed.y} pessoas`;
+              }
+            }
           }
         },
 
         scales:{
-
           y:{
             beginAtZero:true,
+            suggestedMax:CAPACIDADE,
+
+            title:{
+              display:true,
+              text:"Pessoas"
+            },
+
+            ticks:{
+              precision:0
+            },
+
             grid:{
               color:"#eef1ef"
             }
           },
 
           x:{
+            title:{
+              display:true,
+              text:"Horário"
+            },
+
+            ticks:{
+              maxTicksLimit:8,
+              maxRotation:0
+            },
+
             grid:{
               display:false
             }
@@ -2655,6 +2776,7 @@ onValue(
 
   }
 );
+
 
 </script>
 
