@@ -1846,6 +1846,61 @@ body{
   box-shadow:0 5px 15px rgba(0,40,28,.22);
 }
 .carousel-dot.active{background:#ffffff;box-shadow:0 0 0 2px rgba(25,169,116,.45)}
+
+/* =========================================================
+   CARROSSEL DE ATENDIMENTO — ALMOÇO / JANTAR
+========================================================= */
+.meal-carousel{
+  position:relative;
+  margin-top:14px;
+  overflow:hidden;
+  border-radius:14px;
+}
+.meal-carousel-track{
+  display:flex;
+  width:200%;
+  transition:transform .38s ease;
+}
+.meal-slide{
+  width:50%;
+  flex:0 0 50%;
+  padding:2px;
+}
+.meal-slide .meal-service{height:100%}
+.meal-carousel-nav{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+}
+.meal-carousel-arrow{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid #d7e4dd;background:#fff;color:var(--verde);
+  cursor:pointer;font-size:1.15rem;line-height:1;
+  display:grid;place-items:center;
+}
+.meal-carousel-dots{display:flex;gap:6px;align-items:center}
+.meal-carousel-dot{
+  width:8px;height:8px;border-radius:50%;border:0;padding:0;
+  background:#cdd9d2;cursor:pointer;transition:.2s;
+}
+.meal-carousel-dot.active{
+  width:22px;border-radius:999px;background:var(--verde-claro);
+}
+.meal-wait-box{
+  margin-top:12px;padding:13px 14px;border:1px solid #dfe9e3;
+  border-radius:11px;background:#fff;
+}
+.meal-wait-box .wait-value{font-size:1.2rem}
+.meal-wait-note{
+  display:block;margin-top:4px;color:var(--ink-soft);
+  font-size:.52rem;line-height:1.4;
+}
+@media(max-width:540px){
+  .meal-slide{padding:0}
+}
+
 </style>
 </head>
 
@@ -2013,56 +2068,78 @@ body{
     <div class="service-heading">
       <div>
         <div class="service-kicker">ATENDIMENTO DO RU</div>
-        <h3>Horários de atendimento</h3>
+        <h3>Horários e tempo estimado de espera</h3>
       </div>
       <div class="service-now" id="serviceNow">Verificando horário...</div>
     </div>
 
-    <div class="service-grid">
+    <div class="meal-carousel" id="mealCarousel">
+      <div class="meal-carousel-track" id="mealCarouselTrack">
 
-      <article class="meal-service lunch-service">
-        <div class="meal-top">
-          <div class="meal-icon">☀</div>
-          <div>
-            <div class="meal-name">ALMOÇO</div>
-            <div class="meal-days">Segunda a sábado</div>
-          </div>
-          <span class="meal-status" id="lunchStatus">Fechado</span>
+        <div class="meal-slide">
+          <article class="meal-service lunch-service">
+            <div class="meal-top">
+              <div class="meal-icon">☀</div>
+              <div>
+                <div class="meal-name">ALMOÇO</div>
+                <div class="meal-days">Segunda a sábado</div>
+              </div>
+              <span class="meal-status" id="lunchStatus">Fechado</span>
+            </div>
+
+            <div class="meal-time-row">
+              <span>Horário</span>
+              <strong>11h — 14h</strong>
+            </div>
+
+            <div class="meal-wait-box">
+              <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
+              <strong class="wait-value" id="waitLunchCarousel">--</strong>
+              <small class="meal-wait-note" id="waitLunchCarouselNote">
+                Disponível durante o atendimento
+              </small>
+            </div>
+          </article>
         </div>
 
-        <div class="meal-time-row">
-          <span>Horário</span>
-          <strong>11h — 14h</strong>
+        <div class="meal-slide">
+          <article class="meal-service dinner-service">
+            <div class="meal-top">
+              <div class="meal-icon">☾</div>
+              <div>
+                <div class="meal-name">JANTAR</div>
+                <div class="meal-days">Segunda a sexta-feira</div>
+              </div>
+              <span class="meal-status" id="dinnerStatus">Fechado</span>
+            </div>
+
+            <div class="meal-time-row">
+              <span>Horário</span>
+              <strong>17h30 — 20h</strong>
+            </div>
+
+            <div class="meal-wait-box">
+              <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
+              <strong class="wait-value" id="waitDinnerCarousel">--</strong>
+              <small class="meal-wait-note" id="waitDinnerCarouselNote">
+                Disponível durante o atendimento
+              </small>
+            </div>
+          </article>
         </div>
-      </article>
 
-      <article class="meal-service dinner-service">
-        <div class="meal-top">
-          <div class="meal-icon">☾</div>
-          <div>
-            <div class="meal-name">JANTAR</div>
-            <div class="meal-days">Segunda a sexta-feira</div>
-          </div>
-          <span class="meal-status" id="dinnerStatus">Fechado</span>
-        </div>
-
-        <div class="meal-time-row">
-          <span>Horário</span>
-          <strong>17h30 — 20h</strong>
-        </div>
-      </article>
-
-    </div>
-
-    <div class="general-wait">
-      <div>
-        <span class="wait-label">TEMPO ESTIMADO DE ESPERA</span>
-        <strong class="general-wait-value" id="waitGeneral">--</strong>
       </div>
 
-      <small id="waitGeneralNote">
-        Aguardando estimativa do sistema
-      </small>
+      <div class="meal-carousel-nav">
+        <button class="meal-carousel-arrow" id="mealPrev" aria-label="Mostrar almoço">‹</button>
+
+        <div class="meal-carousel-dots">
+          <button class="meal-carousel-dot active" data-meal-index="0" aria-label="Almoço"></button>
+          <button class="meal-carousel-dot" data-meal-index="1" aria-label="Jantar"></button>
+        </div>
+
+        <button class="meal-carousel-arrow" id="mealNext" aria-label="Mostrar jantar">›</button>
+      </div>
     </div>
 
   </section>
@@ -2249,59 +2326,87 @@ atualizarStatusServico();
 setInterval(atualizarStatusServico,60000);
 
 /* TEMPO ESTIMADO DE ESPERA
-   -1 = calculando
-    0 = sem espera
-   >0 = minutos estimados para liberação de vaga */
-onValue(ref(db,"RU/tempoEspera"),snapshot=>{
+   O ESP32 envia um valor geral em RU/tempoEspera.
+   A página mostra o valor apenas no serviço que estiver aberto. */
+let tempoEsperaAtual = null;
 
-  const valor = snapshot.val();
+function formatarTempoEspera(valor){
 
-  const el =
-    document.getElementById("waitGeneral");
-
-  const nota =
-    document.getElementById("waitGeneralNote");
-
-  if(valor === null || isNaN(Number(valor))){
-
-    el.textContent = "--";
-
-    nota.textContent =
-      "Aguardando estimativa do sistema";
-
-    return;
+  if(valor === null || valor === undefined || isNaN(Number(valor))){
+    return {
+      valor:"--",
+      nota:"Aguardando estimativa do sistema"
+    };
   }
 
-  const minutos =
-    Number(valor);
+  const minutos = Number(valor);
 
   if(minutos < 0){
-
-    el.textContent =
-      "Calculando...";
-
-    nota.textContent =
-      "Aguardando saídas recentes para calcular a média de liberação de vagas";
-
-  }else if(minutos === 0){
-
-    el.textContent =
-      "Sem espera";
-
-    nota.textContent =
-      "Há disponibilidade de vagas no momento";
-
-  }else{
-
-    el.textContent =
-      `~ ${Math.round(minutos)} min`;
-
-    nota.textContent =
-      "Baseado na média recente de liberação de vagas";
-
+    return {
+      valor:"Calculando...",
+      nota:"Aguardando saídas recentes para calcular a média de liberação de vagas"
+    };
   }
 
+  if(minutos === 0){
+    return {
+      valor:"Sem espera",
+      nota:"Há disponibilidade de vagas no momento"
+    };
+  }
+
+  return {
+    valor:`~ ${Math.round(minutos)} min`,
+    nota:"Baseado na média recente de liberação de vagas"
+  };
+}
+
+function atualizarEsperaNosServicos(){
+
+  const agora = new Date();
+  const dia = agora.getDay();
+  const minutosAgora = agora.getHours()*60 + agora.getMinutes();
+
+  const almocoAberto =
+    dia >= 1 && dia <= 6 &&
+    minutosAgora >= 11*60 &&
+    minutosAgora < 14*60;
+
+  const jantarAberto =
+    dia >= 1 && dia <= 5 &&
+    minutosAgora >= 17*60+30 &&
+    minutosAgora < 20*60;
+
+  const lunchValue = document.getElementById("waitLunchCarousel");
+  const lunchNote = document.getElementById("waitLunchCarouselNote");
+  const dinnerValue = document.getElementById("waitDinnerCarousel");
+  const dinnerNote = document.getElementById("waitDinnerCarouselNote");
+
+  const formatado = formatarTempoEspera(tempoEsperaAtual);
+
+  if(almocoAberto){
+    lunchValue.textContent = formatado.valor;
+    lunchNote.textContent = formatado.nota;
+  }else{
+    lunchValue.textContent = "--";
+    lunchNote.textContent = "Disponível durante o horário do almoço";
+  }
+
+  if(jantarAberto){
+    dinnerValue.textContent = formatado.valor;
+    dinnerNote.textContent = formatado.nota;
+  }else{
+    dinnerValue.textContent = "--";
+    dinnerNote.textContent = "Disponível durante o horário do jantar";
+  }
+}
+
+onValue(ref(db,"RU/tempoEspera"),snapshot=>{
+  tempoEsperaAtual = snapshot.val();
+  atualizarEsperaNosServicos();
 });
+
+setInterval(atualizarEsperaNosServicos,60000);
 
 /* ANIMAÇÃO DO NÚMERO */
 function animarNumero(el,de,para,duracao=500){
@@ -2595,185 +2700,203 @@ onValue(ref(db,"RU/picoDia"),snapshot=>{
 });
 
 /* HISTÓRICO DE LOTAÇÃO
-   O ESP32 registra um ponto em cada entrada e saída:
-   RU/historicoLotacao/HHMMSS */
-onValue(
-  ref(db,"RU/historicoLotacao"),
-  snapshot=>{
+   Preferência: RU/historicoLotacao.
+   Fallback: RU/historicoPorHora, para o gráfico continuar aparecendo
+   mesmo antes do histórico detalhado ser criado pelo novo ESP32. */
 
-    const dados =
-      snapshot.val();
+let historicoDetalhado = null;
+let historicoPorHoraFallback = null;
 
-    const canvas =
-      document.getElementById("peakChart");
+function renderizarGraficoLotacao(){
 
-    const vazio =
-      document.getElementById("emptyState");
+  const canvas = document.getElementById("peakChart");
+  const vazio = document.getElementById("emptyState");
 
-    if(!dados || Object.keys(dados).length === 0){
+  let labels = [];
+  let valores = [];
 
-      if(chartInstance){
-        chartInstance.destroy();
-        chartInstance = null;
-      }
-
-      canvas.style.display = "none";
-      vazio.style.display = "block";
-      vazio.textContent =
-        "Ainda não há dados suficientes para mostrar o histórico.";
-
-      document.getElementById("peakHourDisplay").textContent = "--";
-      document.getElementById("peakValueDisplay").textContent = "--";
-      document.getElementById("summaryPeakHour").textContent = "--";
-
-      return;
-    }
+  if(
+    historicoDetalhado &&
+    Object.keys(historicoDetalhado).length > 0
+  ){
 
     const chaves =
-      Object.keys(dados)
+      Object.keys(historicoDetalhado)
         .filter(chave=>/^\d{6}$/.test(chave))
         .sort();
 
-    if(chaves.length === 0){
-      canvas.style.display = "none";
-      vazio.style.display = "block";
-      return;
-    }
-
-    const valores =
-      chaves.map(chave=>Number(dados[chave]));
-
-    const labels =
+    labels =
       chaves.map(chave=>
         `${chave.slice(0,2)}:${chave.slice(2,4)}`
       );
 
-    const maxValor =
-      Math.max(...valores);
+    valores =
+      chaves.map(chave=>
+        Number(historicoDetalhado[chave])
+      );
 
-    const indicePico =
-      valores.indexOf(maxValor);
+  }else if(
+    historicoPorHoraFallback &&
+    Object.keys(historicoPorHoraFallback).length > 0
+  ){
 
-    const horaPico =
-      labels[indicePico];
+    const horas =
+      Object.keys(historicoPorHoraFallback)
+        .sort((a,b)=>Number(a)-Number(b));
 
-    document.getElementById(
-      "peakHourDisplay"
-    ).textContent = horaPico;
+    labels =
+      horas.map(h=>`${h}h`);
 
-    document.getElementById(
-      "peakValueDisplay"
-    ).textContent = maxValor;
+    valores =
+      horas.map(h=>
+        Number(historicoPorHoraFallback[h])
+      );
+  }
 
-    document.getElementById(
-      "summaryPeakHour"
-    ).textContent = horaPico;
-
-    canvas.style.display = "block";
-    vazio.style.display = "none";
-
-    if(typeof Chart === "undefined"){
-      canvas.style.display = "none";
-      vazio.style.display = "block";
-      vazio.textContent =
-        "Não foi possível carregar o gráfico. Atualize a página.";
-      return;
-    }
+  if(labels.length === 0){
 
     if(chartInstance){
       chartInstance.destroy();
+      chartInstance = null;
     }
 
-    chartInstance = new Chart(canvas,{
+    canvas.style.display = "none";
+    vazio.style.display = "block";
+    vazio.textContent =
+      "Ainda não há dados suficientes para mostrar o histórico.";
 
-      type:"line",
+    document.getElementById("peakHourDisplay").textContent = "--";
+    document.getElementById("peakValueDisplay").textContent = "--";
+    document.getElementById("summaryPeakHour").textContent = "--";
 
-      data:{
-        labels:labels,
+    return;
+  }
 
-        datasets:[{
-          data:valores,
+  const maxValor = Math.max(...valores);
+  const indicePico = valores.indexOf(maxValor);
+  const horaPico = labels[indicePico];
 
-          stepped:true,
+  document.getElementById("peakHourDisplay").textContent = horaPico;
+  document.getElementById("peakValueDisplay").textContent = maxValor;
+  document.getElementById("summaryPeakHour").textContent = horaPico;
 
-          borderColor:"#006b4f",
-          backgroundColor:"rgba(25,169,116,.12)",
+  canvas.style.display = "block";
+  vazio.style.display = "none";
 
-          fill:true,
-          borderWidth:3,
+  if(typeof Chart === "undefined"){
+    canvas.style.display = "none";
+    vazio.style.display = "block";
+    vazio.textContent =
+      "Não foi possível carregar o gráfico. Atualize a página.";
+    return;
+  }
 
-          pointRadius:2.5,
-          pointHoverRadius:5,
+  if(chartInstance){
+    chartInstance.destroy();
+  }
 
-          pointBackgroundColor:"#006b4f",
-          pointBorderColor:"#ffffff",
-          pointBorderWidth:1.5,
+  chartInstance = new Chart(canvas,{
+    type:"line",
 
-          tension:0
-        }]
+    data:{
+      labels:labels,
+
+      datasets:[{
+        label:"Lotação",
+        data:valores,
+
+        stepped:"after",
+
+        borderColor:"#006b4f",
+        backgroundColor:"rgba(25,169,116,.12)",
+
+        fill:true,
+        borderWidth:3,
+
+        pointRadius:4,
+        pointHoverRadius:6,
+
+        pointBackgroundColor:"#006b4f",
+        pointBorderColor:"#ffffff",
+        pointBorderWidth:2,
+
+        tension:0
+      }]
+    },
+
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+
+      interaction:{
+        intersect:false,
+        mode:"index"
       },
 
-      options:{
-        responsive:true,
-        maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
 
-        interaction:{
-          intersect:false,
-          mode:"index"
-        },
-
-        plugins:{
-          legend:{
-            display:false
-          },
-
-          tooltip:{
-            callbacks:{
-              label(context){
-                return `${context.parsed.y} pessoas`;
-              }
-            }
-          }
-        },
-
-        scales:{
-          y:{
-            beginAtZero:true,
-            suggestedMax:CAPACIDADE,
-
-            title:{
-              display:true,
-              text:"Pessoas"
-            },
-
-            ticks:{
-              precision:0
-            },
-
-            grid:{
-              color:"#eef1ef"
-            }
-          },
-
-          x:{
-            title:{
-              display:true,
-              text:"Horário"
-            },
-
-            ticks:{
-              maxTicksLimit:8,
-              maxRotation:0
-            },
-
-            grid:{
-              display:false
+        tooltip:{
+          callbacks:{
+            label(context){
+              return `${context.parsed.y} pessoas`;
             }
           }
         }
-      }
-    });
+      },
 
+      scales:{
+        y:{
+          beginAtZero:true,
+          suggestedMax:CAPACIDADE,
+
+          title:{
+            display:true,
+            text:"Pessoas"
+          },
+
+          ticks:{
+            precision:0
+          },
+
+          grid:{
+            color:"#eef1ef"
+          }
+        },
+
+        x:{
+          title:{
+            display:true,
+            text:"Horário"
+          },
+
+          ticks:{
+            maxTicksLimit:8,
+            maxRotation:0
+          },
+
+          grid:{
+            display:false
+          }
+        }
+      }
+    }
+  });
+}
+
+onValue(
+  ref(db,"RU/historicoLotacao"),
+  snapshot=>{
+    historicoDetalhado = snapshot.val();
+    renderizarGraficoLotacao();
+  }
+);
+
+onValue(
+  ref(db,"RU/historicoPorHora"),
+  snapshot=>{
+    historicoPorHoraFallback = snapshot.val();
+    renderizarGraficoLotacao();
   }
 );
 
@@ -2795,5 +2918,83 @@ function showCarousel(index,manual=false){carouselIndex=(index+carouselFotos.len
 function restartCarousel(){clearInterval(carouselTimer);carouselTimer=setInterval(()=>showCarousel(carouselIndex+1),4500)}
 document.getElementById("carouselPrev").addEventListener("click",()=>showCarousel(carouselIndex-1,true));document.getElementById("carouselNext").addEventListener("click",()=>showCarousel(carouselIndex+1,true));renderCarouselDots();restartCarousel();
 </script>
+
+<script>
+/* CARROSSEL DE ALMOÇO / JANTAR */
+(function(){
+
+  const track = document.getElementById("mealCarouselTrack");
+  const prev = document.getElementById("mealPrev");
+  const next = document.getElementById("mealNext");
+  const dots = document.querySelectorAll(".meal-carousel-dot");
+  const carousel = document.getElementById("mealCarousel");
+
+  if(!track || !prev || !next || !carousel) return;
+
+  let index = 0;
+  let touchStartX = 0;
+
+  function mostrarMeal(n){
+    index = Math.max(0,Math.min(1,n));
+
+    track.style.transform =
+      `translateX(-${index * 50}%)`;
+
+    dots.forEach((dot,i)=>
+      dot.classList.toggle("active",i===index)
+    );
+  }
+
+  prev.addEventListener("click",()=>mostrarMeal(0));
+  next.addEventListener("click",()=>mostrarMeal(1));
+
+  dots.forEach(dot=>{
+    dot.addEventListener("click",()=>{
+      mostrarMeal(Number(dot.dataset.mealIndex));
+    });
+  });
+
+  carousel.addEventListener(
+    "touchstart",
+    event=>{
+      touchStartX =
+        event.changedTouches[0].clientX;
+    },
+    {passive:true}
+  );
+
+  carousel.addEventListener(
+    "touchend",
+    event=>{
+      const diff =
+        event.changedTouches[0].clientX - touchStartX;
+
+      if(Math.abs(diff) < 40) return;
+
+      mostrarMeal(diff < 0 ? 1 : 0);
+    },
+    {passive:true}
+  );
+
+  const agora = new Date();
+  const dia = agora.getDay();
+  const minutos = agora.getHours()*60 + agora.getMinutes();
+
+  const jantarAberto =
+    dia >= 1 && dia <= 5 &&
+    minutos >= 17*60+30 &&
+    minutos < 20*60;
+
+  const depoisDoAlmoco =
+    dia >= 1 && dia <= 5 &&
+    minutos >= 14*60;
+
+  mostrarMeal(
+    jantarAberto || depoisDoAlmoco ? 1 : 0
+  );
+
+})();
+</script>
+
 </body>
 </html>
